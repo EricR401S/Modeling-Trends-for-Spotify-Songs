@@ -3,7 +3,7 @@ This is a project in which we will investigate Spotify song data to answer two q
 
 
 
-# Research Question Overview with Variables of interest
+# Research Questions Overview with Variables of interest
 
 TBD
 
