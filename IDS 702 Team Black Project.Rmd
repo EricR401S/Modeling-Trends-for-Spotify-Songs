@@ -36,7 +36,8 @@ Subset the data
 
 ```{r subset}
 #read data
-df <- read.csv("/Users/pr158admin/Modeling-Trends-for-Spotify-Songs/archive/tracks.csv")
+#df <- read.csv("/Users/pr158admin/Modeling-Trends-for-Spotify-Songs/archive/tracks.csv")
+df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
 #subset data
 subset <- df[grep('2010.*', df$release_date),]
 ```
@@ -46,7 +47,7 @@ subset <- df[grep('2010.*', df$release_date),]
 
 Cleaning
 
-
+# Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
 
 
 Description of Dataset
