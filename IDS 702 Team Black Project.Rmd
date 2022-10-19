@@ -52,6 +52,29 @@ Cleaning
 # Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
 
 
+```{r}
+
+# Removing the brackets from the names of the artists
+# This will facilitate summary statistics
+
+df$artists<-gsub("]","",as.character(df$artists))
+df$artists<-gsub("^.","",as.character(df$artists))
+
+# New minute variable for our own use to simplify interpretation
+
+df$duration_minutes <- df$duration_ms/(1000*60)
+
+
+# Optional : Apparently no missing data
+
+colSums(is.na(df))
+
+
+
+```
+
+
+
 Description of Dataset
 
 
