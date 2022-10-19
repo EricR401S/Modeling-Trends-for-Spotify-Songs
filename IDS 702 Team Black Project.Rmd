@@ -59,7 +59,7 @@ df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
 #subset data
 subset <- df[grep('2010.*', df$release_date),]
 ```
-I.Data Overview 
+## I.Data Overview 
 
 Description of Dataset
 
@@ -70,7 +70,7 @@ Definitions of Main Variables of interest
 
 *Popularity (DV1)* is calculated by an algorithm and based on how many times a track has been played and how recent those plays are. This is the response variable that we are interested in this research question 1.
 
-*Explicitness (DV2)* is 
+*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and other words that are deemed unacceptable in a public setting. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. 
 
 *acousticness* = A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.
 
@@ -86,9 +86,12 @@ Definitions of Main Variables of interest
 
 *speechiness* = Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
 
-II. Primary relationship of interest
+## II. Primary relationship of interest
 
 EDA (graphs)
+
+
+
 Relationship to Research Questions
 
 In the research, we have two main Research Questions:
@@ -122,9 +125,9 @@ df2 = subset[RQ2_relation]
 
 pairs.panels(df2)
 ```
-III.Other characteristics
+## III.Other characteristics
 
-IV. Potential Challenges
+## IV. Potential Challenges
 
 
 
