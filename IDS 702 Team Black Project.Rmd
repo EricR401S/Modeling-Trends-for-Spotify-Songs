@@ -42,6 +42,10 @@ df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/r
 subset <- df[grep('2010.*', df$release_date),]
 ```
 
+```{r}
+library(gitcreds)
+gitcreds_set()
+```
 
 Cleaning
 
