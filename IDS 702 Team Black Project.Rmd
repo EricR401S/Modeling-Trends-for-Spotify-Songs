@@ -16,22 +16,6 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-
-
-
-
-
 Subset the data
 
 ```{r subset}
@@ -42,10 +26,6 @@ df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/r
 subset <- df[grep('2010.*', df$release_date),]
 ```
 
-```{r}
-library(gitcreds)
-gitcreds_set()
-```
 
 Cleaning
 
@@ -70,9 +50,15 @@ df$duration_minutes <- df$duration_ms/(1000*60)
 colSums(is.na(df))
 
 
-
 ```
 
+```{r}
+# change "explicit" into binary factor
+df$explicit <- factor(df$explicit)
+
+# make Date readable to R
+df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
+```
 
 
 Description of Dataset
