@@ -16,19 +16,13 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 
-Subset the data
+Load the data
 
 ```{r subset}
 #read data
 #df <- read.csv("/Users/pr158admin/Modeling-Trends-for-Spotify-Songs/archive/tracks.csv")
 df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
 ```
-
-```{r subset}
-#subset data
-subset <- df[grep('2010.*', df$release_date),]
-```
-
 
 Cleaning
 
@@ -63,6 +57,10 @@ df$explicit <- factor(df$explicit)
 df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
 ```
 
+```{r subset}
+#subset data
+subset <- df[grep('2010.*', df$release_date),]
+```
 
 Description of Dataset
 
@@ -72,7 +70,7 @@ Description of Dataset
 Definitions of Predictors
 
 
-
+It is calculated by an algorithm and based on how many times a track has been played and how recent those plays are.
 
 
 Relationship to Research Questions
