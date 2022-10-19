@@ -66,9 +66,11 @@ Description of Dataset
 
 
 
-Definitions of Predictors
+Definitions of Main Variables of interest
 
-*Popularity* is calculated by an algorithm and based on how many times a track has been played and how recent those plays are. This is the response variable that we are interested in this research question 1.
+*Popularity (DV1)* is calculated by an algorithm and based on how many times a track has been played and how recent those plays are. This is the response variable that we are interested in this research question 1.
+
+*Explicitness (DV2)* is 
 
 *acousticness* = A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.
 
