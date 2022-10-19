@@ -22,6 +22,9 @@ Subset the data
 #read data
 #df <- read.csv("/Users/pr158admin/Modeling-Trends-for-Spotify-Songs/archive/tracks.csv")
 df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
+```
+
+```{r subset}
 #subset data
 subset <- df[grep('2010.*', df$release_date),]
 ```
@@ -70,6 +73,8 @@ Definitions of Predictors
 
 
 
+
+
 Relationship to Research Questions
 
 In the research, we have two main Research Questions:
@@ -90,12 +95,21 @@ Relationships within data
 
 ```{r}
 library(psych)
-pairs.panels(subset)
+
+RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
+df1 = subset[RQ1_relation]
+
+pairs.panels(df1)
+```
+
+```{r}
+RQ2_relation <- c("explicit", "danceability", "energy", "speechiness","tempo")
+df2 = subset[RQ2_relation]
+
+pairs.panels(df2)
 ```
 
 graphs
-
-
 challenges
 
 
