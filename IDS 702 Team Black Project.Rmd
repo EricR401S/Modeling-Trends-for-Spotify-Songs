@@ -43,8 +43,6 @@ subset <- df[grep('2010.*', df$release_date),]
 ```
 
 
-
-
 Cleaning
 
 # Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
@@ -55,11 +53,23 @@ Description of Dataset
 
 
 
-Definitions of PRedictors
+Definitions of Predictors
 
 
 
 Relationship to Research Questions
+
+In the research, we have two main Research Questions:
+RQ1.	What are the musical attributes that gauged the popularity of songs in the 2010s? 
+*Dependent Variable (continuous) = popularity*
+*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
+In RQ1, we aim to "infer" what features of music could better measure the popularity.
+ 
+RQ2.	To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
+
+*Dependent Variable (categorical) = Explicitness*
+*Independent Variables = danceability, energy, speechiness, and tempo* 
+In RQ2, we aim to "predict" whether the song is explicit or not by the four features of music: dancebility, energy, speechiness, tempo.
 
 
 
