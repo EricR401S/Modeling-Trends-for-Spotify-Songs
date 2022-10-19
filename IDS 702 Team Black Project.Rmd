@@ -76,7 +76,8 @@ In RQ2, we aim to "predict" whether the song is explicit or not by the four feat
 Relationships within data
 
 ```{r}
-
+library(psych)
+pairs.panels(subset)
 ```
 
 graphs
