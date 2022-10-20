@@ -102,23 +102,23 @@ Description of Dataset
 
 Definitions of Main Variables of interest
 
-*Popularity (DV1)* is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1.
+*Popularity (DV1)* is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1 (Spotify, 2022).
 
-*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and other words that are deemed socially unacceptable to play in some public settings, especially settings with children. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question.
+*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and other words that are deemed socially unacceptable to play in some public settings, especially settings with children. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question (Spotify, 2022).
 
-*acousticness* is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence the track is acoustic.
+*acousticness* is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence the track is acoustic (Spotify, 2022).
 
-*danceability* is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.
+*danceability* is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable (Spotify, 2022).
 
-*energy* is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy.
+*energy* is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy (Spotify, 2022).
 
-*instrumentation* pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". As the instrumentalness value approaches 1.0, there is a greater likelihood that the track contains no vocal content. In addition, values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
+*instrumentation* pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". As the instrumentalness value approaches 1.0, there is a greater likelihood that the track contains no vocal content. In addition, values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0 (Spotify, 2022).
 
-*tempo* refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration.
+*tempo* refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration (Spotify, 2022).
 
-*loudness* measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). Lastly, the values typically range between -60 and 0 db.
+*loudness* measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). Lastly, the values typically range between -60 and 0 db (Spotify, 2022).
 
-*speechiness* detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
+*speechiness* detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks (Spotify, 2022).
 
 Definitions from Spotify: Eric Biliography link[https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features]
 
@@ -168,4 +168,7 @@ pairs.panels(df2)
 
 
 
+## V. Bibliography (Citations)
+
+Spotify (2022). Spotify Web API Reference | Spotify for Developers. https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
 
