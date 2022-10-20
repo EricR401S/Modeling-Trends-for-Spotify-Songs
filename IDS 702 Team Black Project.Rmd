@@ -57,8 +57,10 @@ df$explicit_fac <- factor(df$explicit,
 # make Date readable to R
 # Emma and Eric need to revise this together, some records with Dates passed as NAs in R after running this code.
 # That's the theory. It was single year dates.
-df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
+df$release_year <- substr(df$release_date, 1, 4)
+df$release_year <- as.integer(df$release_year)
 
+#df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
 
 # According to variable definitions, speechiness levels above 0.66 are speech tracks such as podcasts and poetries.
 # They will be removed.
