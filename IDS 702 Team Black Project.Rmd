@@ -31,7 +31,7 @@ Cleaning
 
 ```{r}
 
-# Confirming the data types of the columns 
+# Confirming the data types of the columns
 sapply(df, class)
 
 # Removing the brackets from the names of the artists
@@ -57,19 +57,29 @@ df$explicit_fac <- factor(df$explicit,
 # make Date readable to R
 df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
 
+
+# According to variable definitions, speechiness levels above 0.66 are speech tracks such as podcasts and poetries.
+# They will be removed.
+
+
+df0 <- df[df$speechiness <= 0.66,]
+nrow(df) - nrow(df0) #22,598 records of speech tracks
+
 # Examining records with a value of 0 for tempo
 # A total of 328 records with 0 tempo were found, and most were tracks of rain sounds and introductions. 
 # Some were, unfortunately, real songs.
 
-sum(df$tempo==0)
+sum(df0$tempo==0)
 
 # 148 of those records are from the 2010s decade, our area of interest. 
-tempo_0_subset <- df[df$tempo == 0,]
+tempo_0_subset <- df0[df0$tempo == 0,]
 tempo_0_subset_2010s <- tempo_0_subset[grep('201[0-9].*', tempo_0_subset$release_date),]
+nrow(tempo_0_subset_2010s)
 
-# Examining records with a value of 0 for tempo
+# Removing records with a value of 0 for tempo
 
-df0 <- df[df$tempo != 0,]
+df0 <- df0[df0$tempo != 0,]
+
 
 ```
 
@@ -80,6 +90,11 @@ subset <- df0[grep('2010.*', df$release_date),]
 ```
 ## I.Data Overview 
 
+
+Provide the chief characteristics of your data, including sample size, number of
+variables, and source. Include your research questions here.
+
+
 Description of Dataset
 
 
@@ -87,23 +102,23 @@ Description of Dataset
 
 Definitions of Main Variables of interest
 
-*Popularity (DV1)* is calculated by an algorithm and based on how many times a track has been played and how recent those plays are. This is the response variable that we are interested in this research question 1.
+*Popularity (DV1)* is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1.
 
-*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and other words that are deemed unacceptable in a public setting. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. 
+*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and other words that are deemed socially unacceptable to play in some public settings, especially settings with children. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question.
 
-*acousticness* = A confidence measure from 0.0 to 1.0 of whether the track is acoustic. 1.0 represents high confidence the track is acoustic.
+*acousticness* is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence the track is acoustic.
 
-*danceability* = how suitable a track is for dancing based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.
+*danceability* is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable.
 
-*energy* = a perceptual measure of intensity and activity. Typically, energetic tracks feel fast, loud, and noisy.
+*energy* is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy.
 
-*instrumentation* = whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly "vocal". The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
+*instrumentation* pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". As the instrumentalness value approaches 1.0, there is a greater likelihood that the track contains no vocal content. In addition, values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
 
-*tempo* = The overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece and derives directly from the average beat duration.
+*tempo* refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration.
 
-*loudness* = overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological correlate of physical strength (amplitude). Values typically range between -60 and 0 db.
+*loudness* measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). Lastly, the values typically range between -60 and 0 db.
 
-*speechiness* = Speechiness detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
+*speechiness* detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks.
 
 Definitions from Spotify: Eric Biliography link[https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features]
 
