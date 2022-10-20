@@ -87,8 +87,8 @@ df0 <- df0[df0$tempo != 0,]
 
 ```{r subset}
 #subset data
-#subset <- df0[grepl('201[0-9].*', df$release_date),] ------- Decades Version
-subset <- df0[grep('2010.*', df$release_date),]
+subset <- df0[grepl('201[0-9].*', df$release_date),]
+#subset <- df0[grep('2010.*', df$release_date),]
 ```
 ## I.Data Overview 
 
@@ -185,7 +185,13 @@ Some were not chosen because they were differently coded, such as time signature
 
 ## IV. Potential Challenges
 
+Describe aspects of the data that may present challenges in the modeling stage.
+For example, might certain categorical variables need to be collapsed? Is there a lot of missingness?
+Could the size of the dataset present model selection challenges?
 
+
+Eric's findings from cleaning :
+Yes, there is a bit of missingness. Some dates have years, but not months and days recorded. This meant that we had to manually fix them or give them arbitrary values. Some artist names are missing, which is notable but currently not obstructive. We also do not know if some of the tempos of the higher songs were incorrectly recorded.  
 
 
 ## V. Bibliography (Citations)
