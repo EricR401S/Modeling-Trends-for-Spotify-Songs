@@ -31,6 +31,9 @@ Cleaning
 
 ```{r}
 
+# Confirming the data types of the columns 
+sapply(df, class)
+
 # Removing the brackets from the names of the artists
 # This will facilitate summary statistics
 
@@ -42,7 +45,7 @@ df$artists<-gsub("^.","",as.character(df$artists))
 df$duration_minutes <- df$duration_ms/(1000*60)
 
 
-# Optional : Apparently no missing data
+# Confirming that there are no missing data, except the artist name column
 
 colSums(is.na(df))
 
@@ -53,11 +56,27 @@ df$explicit_fac <- factor(df$explicit,
 
 # make Date readable to R
 df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
+
+# Examining records with a value of 0 for tempo
+# A total of 328 records with 0 tempo were found, and most were tracks of rain sounds and introductions. 
+# Some were, unfortunately, real songs.
+
+sum(df$tempo==0)
+
+# 148 of those records are from the 2010s decade, our area of interest. 
+tempo_0_subset <- df[df$tempo == 0,]
+tempo_0_subset_2010s <- tempo_0_subset[grep('201[0-9].*', tempo_0_subset$release_date),]
+
+# Examining records with a value of 0 for tempo
+
+df0 <- df[df$tempo != 0,]
+
 ```
 
 ```{r subset}
 #subset data
-subset <- df[grep('2010.*', df$release_date),]
+#subset <- df0[grepl('201[0-9].*', df$release_date),] ------- Decades Version
+subset <- df0[grep('2010.*', df$release_date),]
 ```
 ## I.Data Overview 
 
