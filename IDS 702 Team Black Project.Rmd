@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(psych)
 library(corrplot)
+library(dplyr)
 ```
 
 ```{r subset, echo = FALSE, message=FALSE, results = FALSE}
@@ -165,7 +166,93 @@ format you think is best (tables, figures) for your primary relationship of inte
 and primary independent variable, if applicable). Describe your findings.
 
 EDA (graphs)
+To better understand the dataset, the popularity variable was binned into 5 groups ranging from least popular to more popular across group 1 to group 2
 
+```{r, echo = FALSE, message=FALSE, results = FALSE }
+#create datasets for EDA
+#5 pop grpups across the data for better grouping
+edadf1<- df1%>%mutate(popularity_fac= case_when(popularity <= 20 ~ "pop group 1",
+                                                popularity <= 40 ~ "pop group 2",
+                                                popularity <= 60~ "pop group 3",
+                                                popularity <= 80~ "pop group 4",
+                                                popularity <= 100 ~ "pop group 5"))
+
+#eda dataset for 2: includes release year
+q2 <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
+edadf2 = subset[q2]
+
+```
+
+
+#df1
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
+#Relationship between danceability and popularity
+ggplot(edadf1) +
+  aes(x = "", y = danceability, colour = popularity_fac) +
+  geom_boxplot(fill = "#112446") +
+  scale_color_hue(direction = 1) +
+  labs(
+    x = "Popularity",
+    y = "Danceability",
+    title = "Relationship between danceability and popularity",
+    color = "Popularity Groups",
+    caption = "Fig 1"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#Relationship between Instrumentalness and energy along the popularity scale
+ggplot(edadf1) +
+  aes(x = instrumentalness, y = energy) +
+  geom_point(shape = "circle", size = 1.5, colour = "#F8766D") +
+  labs(
+    x = "Instrumentalness",
+    y = "Energy",
+    title = "Relationship between Instrumentalness and energy along the popularity scale",
+    caption = "Fig 2"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+
+#Relationship between loudness and tempo along the popularity scale
+ggplot(edadf1) +
+  aes(x = loudness, y = tempo) +
+  geom_point(shape = "circle", size = 1.5, colour = "#00BA38") +
+  labs(
+    x = "loudness",
+    y = "tempo",
+    title = "Relationship between loudness and tempo along the popularity scale",
+    caption = "Fig 3"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+
+#
+ggplot(edadf1) +
+  aes(x = speechiness, y = instrumentalness) +
+  geom_point(shape = "circle", size = 1.5, colour = "#619CFF") +
+  labs(
+    x = "speechiness",
+    y = "instrumentalness",
+    title = "Relationship between speechiness and instrumentalness along the popularity scale",
+    caption = "Fig 4"
+  )+
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+
+```
+
+Explanation
+
+Fig 1: In this chart we see that the average danceability increases a long the popularity scale of songs.
+Fig 2: In this chart we see that as songs get more popular the energy remains evenly distributed but the Instrumentalness reduces with an exception of few outliers although the relationship becomes insignificant 
+Fig 3: The tempo and loudness recipe for a popular song lies between 50-200 for tempo units and -20 to 0 for loudness decibles.
+Fig 4: As songs gets popular the spechiness remains evenly distributed but the instrumentalness disappear
+
+From the above EDA, we see that variables like instrumentalness will ultimately become less signficant. 
 
 
 Relationship to Research Questions
