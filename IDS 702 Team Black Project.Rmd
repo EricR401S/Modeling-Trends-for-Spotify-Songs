@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Load Libraries
 library(ggplot2)
 library(psych)
+library(corrplot)
 ```
 
 ```{r subset, echo = FALSE, message=FALSE, results = FALSE}
@@ -79,6 +80,7 @@ df0 <- df0[df0$tempo != 0,]
 ```{r, echo = FALSE, message=FALSE, results = FALSE }
 #subset data
 subset <- df0[grepl('201[0-9].*', df0$release_year),]
+
 #subset <- df0[grep('2010.*', df$release_date),]
 ```
 
@@ -198,14 +200,16 @@ library(psych)
 RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
 df1 = subset[RQ1_relation]
 #sum(is.na(df1))
-pairs.panels(df1)
+#pairs.panels(df1)
+cordf1 = cor(df1)
+corrplot(cordf1, method = 'color', order = 'alphabet')
 ```
 
 ```{r}
 RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo")
 df2 = subset[RQ2_relation]
 #sum(is.na(df2))
-pairs.panels(df2)
+#pairs.panels(df2)
 ```
 ## III.Other characteristics
 
