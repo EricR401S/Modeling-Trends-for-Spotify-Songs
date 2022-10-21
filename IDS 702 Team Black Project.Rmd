@@ -135,7 +135,23 @@ library(boot)
 
 table1(~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness+popularity| explicit_fac, data=subset, flip_data=TRUE, overall = "total")
 ```
+```{r}
+library(psych)
 
+RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
+df1 = subset[RQ1_relation]
+#sum(is.na(df1))
+#pairs.panels(df1)
+cordf1 = cor(df1)
+corrplot(cordf1, method = 'color', order = 'alphabet')
+```
+
+```{r}
+RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo")
+df2 = subset[RQ2_relation]
+#sum(is.na(df2))
+#pairs.panels(df2)
+```
 
 
 Definitions of Main Variables of interest
@@ -185,7 +201,7 @@ edadf2 = subset[q2]
 
 
 #df1
-```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
 #Relationship between danceability and popularity
 ggplot(edadf1) +
   aes(x = "", y = danceability, colour = popularity_fac) +
@@ -359,23 +375,7 @@ In RQ2, we aim to "predict" whether the song is explicit or not by the four feat
 
 Relationships within data
 
-```{r}
-library(psych)
 
-RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
-df1 = subset[RQ1_relation]
-#sum(is.na(df1))
-#pairs.panels(df1)
-cordf1 = cor(df1)
-corrplot(cordf1, method = 'color', order = 'alphabet')
-```
-
-```{r}
-RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo")
-df2 = subset[RQ2_relation]
-#sum(is.na(df2))
-#pairs.panels(df2)
-```
 ## III.Other characteristics
 
 Briefly describe other variables in the data. If there are many, do not list
