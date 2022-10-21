@@ -85,12 +85,27 @@ subset <- df0[grepl('201[0-9].*', df0$release_year),]
 #subset <- df0[grep('2010.*', df$release_date),]
 ```
 
-## I.Data Overview 
+# EXPLORING POPULARITY AND EXPLICITY OF 2010s MUSIC THROUGH MUSICALITY.
 
+## I. Data Overview 
+
+The data set used in this research is a subset of a larger spotify dataset[link] that contained xxx number of tracks. It contains x number of observations/ tracks and x number of variables for songs between 2010 and 2019 thus the 2010s decade. 
+Our focus in this research aims to infer which features of music can measure the popularity of songs using songs fro the 2010s decade and predict where a song is explicit or not based on these features. 
+Our Research Questions are as under:
+<ul>
+-What are the musical attributes that gauged the popularity of songs in the 2010s? 
+*Dependent Variable (continuous) = popularity*
+*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
+ 
+-To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
+
+*Dependent Variable (categorical) = Explicitness*
+*Independent Variables = danceability, energy, speechiness, and tempo* 
+In RQ2, we aim to "predict" whether the song is explicit or not by the four features of music: dancebility, energy, speechiness, tempo.
+<ul>
 
 Project Proposal : Provide the chief characteristics of your data, including sample size, number of
 variables, and source. Include your research questions here.
-
 
 Description of Dataset
 The original dataset contains `r nrow(df)` rows, that is song tracks and `r ncol(df)` variable columns. Potential challenges faced with the dataset were:
@@ -100,26 +115,7 @@ The original dataset contains `r nrow(df)` rows, that is song tracks and `r ncol
 4. Speechiness variable levels above 0.66 categorise as speech tracks like podcasts and poetries. Hence, they have been dropped. 
 5. Trash tempo values recorded as 0 had to be removed.
 
-#Included the research questions here as we need to  introduce them before data description and also before the relationship of research. Check if this is ok.
-
-Our Research Questions are as under:
-RQ1.	What are the musical attributes that gauged the popularity of songs in the 2010s? 
-*Dependent Variable (continuous) = popularity*
-*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
-In RQ1, we aim to "infer" what features of music could better measure the popularity.
- 
-RQ2.	To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
-
-*Dependent Variable (categorical) = Explicitness*
-*Independent Variables = danceability, energy, speechiness, and tempo* 
-In RQ2, we aim to "predict" whether the song is explicit or not by the four features of music: dancebility, energy, speechiness, tempo.
-
-Modifications based on the research questions:
-
-1. Our research question pertains to the songs of the 2010s decade. Hence, post subsetting the original dataset to  our research interest, the dataset contains `r nrow(subset)` rows and `r ncol(subset)` columns. 
-2. Bad tempo data in the subset for around 148 tracks have been dropped. The column names depicting are variables of interest and the rows depicting the number of observations. 
-3. For our first research question we have popularity as dependent variable which is continuous variable.
-Our second research questions predicts Explicitness(dependent variable) on basis of predictor variables. Explicit here is a categorical variable and hence, we will factor it into non explicit, and explicit.
+## II.Primary relationship of interest
 
 ```{r, results = "asis", message=FALSE, warning=FALSE, echo=FALSE}
 library(stargazer)
@@ -135,6 +131,8 @@ library(boot)
 
 table1(~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness+popularity| explicit_fac, data=subset, flip_data=TRUE, overall = "total")
 ```
+
+
 ```{r}
 library(psych)
 
@@ -154,35 +152,31 @@ df2 = subset[RQ2_relation]
 ```
 
 
-Definitions of Main Variables of interest
+Definitions of variables of interest
+<ul>
+-**Popularity** is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1 (Spotify, 2022).
 
-*Popularity (DV1)* is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1 (Spotify, 2022).
+-**Explicitness** is whether a song contains inappropriate words such as curse words and sexually explicit words that are unacceptable to play in some public settings. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question (Spotify, 2022).
 
-*Explicitness (DV2)* is whether a song contains inappropriate words such as curse words and sexually explicit words that are unacceptable to play in some public settings. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question (Spotify, 2022).
+-**Acousticness* is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence the track is acoustic (Spotify, 2022).
 
-*acousticness* is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence the track is acoustic (Spotify, 2022).
+-**Danceability** is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable (Spotify, 2022).
 
-*danceability* is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable (Spotify, 2022).
+-**Energy* is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy (Spotify, 2022).
 
-*energy* is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy (Spotify, 2022).
+-**Instrumentation** pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". As the instrumentalness value approaches 1.0, there is a greater likelihood that the track contains no vocal content. In addition, values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0 (Spotify, 2022).
 
-*instrumentation* pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". As the instrumentalness value approaches 1.0, there is a greater likelihood that the track contains no vocal content. In addition, values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0 (Spotify, 2022).
+-**Tempo** refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration (Spotify, 2022).
 
-*tempo* refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration (Spotify, 2022).
+-**Loudness** measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). Lastly, the values typically range between -60 and 0 db (Spotify, 2022).
 
-*loudness* measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). Lastly, the values typically range between -60 and 0 db (Spotify, 2022).
+-**Speechiness** detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks (Spotify, 2022).
 
-*speechiness* detects the presence of spoken words in a track. The more exclusively speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attribute value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks (Spotify, 2022).
+<ul>
 
+### Analysis of variables
 
-## II. Primary relationship of interest
-
-Project Proposal Description - Present descriptive statistics and exploratory plots in whichever
-format you think is best (tables, figures) for your primary relationship of interest (dependent variable
-and primary independent variable, if applicable). Describe your findings.
-
-EDA (graphs)
-To better understand the dataset, the popularity variable was binned into 5 groups ranging from least popular to more popular across group 1 to group 2
+To better understand the data set, the popularity variable was binned into 5 groups ranging from least popular to more popular across group 1 to group 5.
 
 ```{r, echo = FALSE, message=FALSE, results = FALSE }
 #create datasets for EDA
@@ -199,8 +193,6 @@ edadf2 = subset[q2]
 
 ```
 
-
-#df1
 ```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
 #Relationship between danceability and popularity
 ggplot(edadf1) +
@@ -230,7 +222,12 @@ ggplot(edadf1) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   facet_wrap(vars(popularity_fac))
+```
 
+Fig 1: In this chart we see that the average danceability increases a long the popularity scale of songs.
+Fig 2: In this chart we see that as songs get more popular the energy remains evenly distributed but the Instrumentalness reduces with an exception of few outliers although the relationship becomes insignificant 
+
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
 #Relationship between loudness and tempo along the popularity scale
 ggplot(edadf1) +
   aes(x = loudness, y = tempo) +
@@ -245,7 +242,7 @@ ggplot(edadf1) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
   facet_wrap(vars(popularity_fac))
 
-#
+#Relationship between speechiness and instrumentalness along the popularity scale
 ggplot(edadf1) +
   aes(x = speechiness, y = instrumentalness) +
   geom_point(shape = "circle", size = 1.5, colour = "#619CFF") +
@@ -261,17 +258,14 @@ ggplot(edadf1) +
 
 ```
 
-Explanation
-
-Fig 1: In this chart we see that the average danceability increases a long the popularity scale of songs.
-Fig 2: In this chart we see that as songs get more popular the energy remains evenly distributed but the Instrumentalness reduces with an exception of few outliers although the relationship becomes insignificant 
-Fig 3: The tempo and loudness recipe for a popular song lies between 50-200 for tempo units and -20 to 0 for loudness decibles.
+Fig 3: The tempo and loudness recipe for a popular song lies between 50-200 bpm for tempo units and -20 to 0 for loudness decibles.
 Fig 4: As songs gets popular the spechiness remains evenly distributed but the instrumentalness disappear
-
 From the above EDA, we see that variables like instrumentalness will ultimately become less signficant. 
 
+EDA Q2:
+Fig 5 : explicit content in music has risen over the years
+Fig 6: the energy in explicit songs is centered around the mean(calc) while non explicit songs are skewed to the higher energy(calc)
 
-#df2
 ```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
 #explicity over the years
 ggplot(edadf2) +
@@ -304,7 +298,6 @@ ggplot(edadf2) +
   theme_minimal()+
   theme(plot.title = element_text(face = "bold", hjust = 0.5))
 
-
 #danceability in explicit music
 ggplot(edadf2) +
   aes(x = danceability, fill = explicit_fac) +
@@ -336,17 +329,8 @@ ggplot(edadf2) +
   theme(plot.title = element_text(face = "bold", hjust = 0.5))
 
 ```
-
-
-EDA Q2:
-Fig 5 : explicit content in music has risen over the years
-
-Fig 6: the energy in explicit songs is centered around the mean(calc) while non explicit songs are skewed to the higher energy(calc)
-
 Fig 7:  the danceability songs is centered around the mean(calc)
-
-Fig 8:  The average speechiness in explicit songs is way less in explicit songs. 
-
+Fig 8:  The average speechiness in explicit songs is way less in explicit songs.
 In conclusion, the chosen variables would give us a great classification of explicit and non explicit songs moving forward. 
 
 Relationship to Research Questions
@@ -372,10 +356,6 @@ RQ2.	To what extent can the musicality of a song predict whether a song will be 
 In RQ2, we aim to "predict" whether the song is explicit or not by the four features of music: dancebility, energy, speechiness, tempo.
 
 
-
-Relationships within data
-
-
 ## III.Other characteristics
 
 Briefly describe other variables in the data. If there are many, do not list
@@ -394,6 +374,13 @@ Could the size of the dataset present model selection challenges?
 
 Eric's findings from cleaning :
 Yes, there is a bit of missingness. Some dates have years, but not months and days recorded. This meant that we had to manually fix them or give them arbitrary values. Some artist names are missing, which is notable but currently not obstructive. We also do not know if some of the tempos of the higher songs were incorrectly recorded.  
+
+Modifications based on the research questions:
+
+1. Our research question pertains to the songs of the 2010s decade. Hence, post subsetting the original dataset to  our research interest, the dataset contains `r nrow(subset)` rows and `r ncol(subset)` columns. 
+2. Bad tempo data in the subset for around 148 tracks have been dropped. The column names depicting are variables of interest and the rows depicting the number of observations. 
+3. For our first research question we have popularity as dependent variable which is continuous variable.
+Our second research questions predicts Explicitness(dependent variable) on basis of predictor variables. Explicit here is a categorical variable and hence, we will factor it into non explicit, and explicit.
 
 
 ## V. Bibliography (Citations)
