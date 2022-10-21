@@ -89,7 +89,7 @@ df0 <- df0[df0$tempo != 0,]
 
 ```{r subset}
 #subset data
-subset <- df0[grepl('201[0-9].*', df$release_year),]
+subset <- df0[grepl('201[0-9].*', df0$release_year),]
 #subset <- df0[grep('2010.*', df$release_date),]
 ```
 
