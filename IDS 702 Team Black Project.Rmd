@@ -255,6 +255,84 @@ Fig 4: As songs gets popular the spechiness remains evenly distributed but the i
 From the above EDA, we see that variables like instrumentalness will ultimately become less signficant. 
 
 
+#df2
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
+#explicity over the years
+ggplot(edadf2) +
+  aes(x = release_year, colour = explicit_fac) +
+  geom_density(adjust = 1L, fill = "#112446") +
+  scale_color_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Explicit and non explicit content in music over the years",
+    x = "Release year",
+    y = "Density of explicit content in music ",
+    caption = "Fig 5"
+  )+
+  scale_x_continuous(breaks=seq(2010,2019,1))+
+  theme_minimal()
+
+#energy in explicit music
+ggplot(edadf2) +
+  aes(x = energy, colour = explicit_fac) +
+  geom_histogram(bins = 30L, fill = "#112446") +
+  scale_color_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Energy in explicit and non explicit songs",
+    caption = "Fig 6")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+
+#danceability in explicit music
+ggplot(edadf2) +
+  aes(x = danceability, fill = explicit_fac) +
+  geom_histogram(bins = 30L) +
+  scale_fill_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Danceability in explicit and non explicit songs",
+    caption = "Fig 7")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#speechiness in explicitt music
+ggplot(edadf2) +
+  aes(x = "", y = speechiness, fill = explicit_fac) +
+  geom_boxplot() +
+  scale_fill_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Speechiness in explicit and non explicit songs",
+    
+    caption = "Fig 8")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+```
+
+
+EDA Q2:
+Fig 5 : explicit content in music has risen over the years
+
+Fig 6: the energy in explicit songs is centered around the mean(calc) while non explicit songs are skewed to the higher energy(calc)
+
+Fig 7:  the danceability songs is centered around the mean(calc)
+
+Fig 8:  The average speechiness in explicit songs is way less in explicit songs. 
+
+In conclusion, the chosen variables would give us a great classification of explicit and non explicit songs moving forward. 
+
 Relationship to Research Questions
 
 First and foremost, we choose the variables for our research questions based on prior, domain knowledge of musical terminology. For the first research question, which concerns the features that popularized songs during the 2010s, a series of aforementioned predictors were chosen. What will follow is the justification for this "a priori" selection for both research questions.
