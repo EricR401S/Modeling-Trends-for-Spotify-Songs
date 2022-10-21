@@ -93,12 +93,16 @@ variables, and source. Include your research questions here.
 
 
 Description of Dataset
-The original dataset contains `r nrow(df)` rows, that is song tracks and `r ncol(df)` variable columns. Potential challenges faced with the dataset were:
-1. Inconsistent data types for dates column which required cleaning of dates to read them better. 
-2. Some cleaning of artist names required missing values to be dropped, cleaning of brackets from the names to make them consistent for future use. 
-3. Conversion of duration variable from ms to minutes to facilitate easy interpretation. 
-4. Speechiness variable levels above 0.66 categorise as speech tracks like podcasts and poetries. Hence, they have been dropped. 
-5. Trash tempo values recorded as 0 had to be removed.
+
+The original dataset contains `r nrow(df)` rows, which are song tracks, and `r ncol(df)` variable columns. When cleaning the dataset, potential challenges faced were:
+
+1. Character was the data type for the dates column. Since the year was our interest, it was extracted into a new column variable as an integer type. 
+2. Artist names needed the brackets removed. It was cleaned for future use, if looking into artist’s sonic profiles was our interest. 
+3. The duration variable, which was recorded in milliseconds, was converted to minutes to facilitate easy interpretation. 
+4. The explicitness variable needed to be factored. 
+5. For speechiness, values above 0.66 are categorized as speech tracks like podcasts and poetries. Hence, they have been dropped. 
+5. The tempo variable had values of 0, which is impossible for musical tracks. In addition, we found that tracks with these 0 values were often recordings of white noise, rain sounds, pink noise, intermission songs, and true songs with no tempo data available. These values had to be removed.
+
 
 #Included the research questions here as we need to  introduce them before data description and also before the relationship of research. Check if this is ok.
 
