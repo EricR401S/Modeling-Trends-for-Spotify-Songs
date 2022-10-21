@@ -1,35 +1,24 @@
 ---
 title: "IDS 702 Team Black Project"
 author: "Emma Wang, Pragya Raghuvanshi, Lorna Aine, Eric Rios Soderman"
-date: "2022-10-16"
+date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#Load Libraries
+library(ggplot2)
+library(psych)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-
-Load the data
-
-```{r}
-#read data
-#df <- read.csv("/Users/pr158admin/Modeling-Trends-for-Spotify-Songs/archive/tracks.csv")
+```{r subset, echo = FALSE, message=FALSE, results = FALSE}
+#read original data set
 df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
 ```
 
-Cleaning
-
-# Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
-
-
-```{r}
+```{r datacleaning, echo = FALSE, message=FALSE, results = FALSE }
+#Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
 
 # Confirming the data types of the columns
 sapply(df, class)
@@ -87,7 +76,7 @@ df0 <- df0[df0$tempo != 0,]
 
 ```
 
-```{r subset}
+```{r, echo = FALSE, message=FALSE, results = FALSE }
 #subset data
 subset <- df0[grepl('201[0-9].*', df$release_year),]
 #subset <- df0[grep('2010.*', df$release_date),]
