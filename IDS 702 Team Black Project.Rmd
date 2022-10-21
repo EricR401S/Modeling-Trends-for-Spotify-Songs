@@ -91,7 +91,7 @@ subset <- df0[grepl('201[0-9].*', df0$release_year),]
 
 ### I. Data Overview 
 
-The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r nrow(df)` tracks. Our final subset of the data set of interest to our research problems contains `r nrow(subset)`of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019.
+The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. Our final subset of the data set of interest to our research problems contains `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019.
 Our focus in this research is to infer which features of music are best associated to the popularity of songs and to predict if a song will be explicit or not based on these features. 
 
 ```{r, results = "asis", message=FALSE, warning=FALSE, echo=FALSE,results='hide'}
