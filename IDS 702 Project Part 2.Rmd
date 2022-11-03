@@ -1,0 +1,42 @@
+---
+title: "Part 2 - Statistical Analysis Plan"
+author: "Eric Rios, Emma Wang, Pragya Raghuvanshi, Lorna Aine"
+date: "2022-11-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 2: Statistical Analysis Plan
+
+In part 2, you will produce a statistical analysis plan. The plan should be at most 2 pages, produced in R
+Markdown, and include the following:
+2
+
+
+
+• Overview: Briefly describe the dataset and research questions.
+
+
+
+
+
+• Models: Describe the type of model you will use for each research question. Justify your selections.
+
+
+
+
+
+
+• Variable selection: How will you perform variable selection for your models? For each research
+question, list any variables that you are selecting a priori to be included in your model.
+
+
+
+
+
+• Challenges: How do you plan to address the challenges you presented in part 1?
+An example of a statistical analysis plan is posted in Lessons on Sakai. The “primary analysis” and “sec-
+ondary analysis” sections can serve as guides for how to discuss what kinds of models will be fit and why.
