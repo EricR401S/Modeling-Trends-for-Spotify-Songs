@@ -27,7 +27,22 @@ Markdown, and include the following:
 
 
 
+In research question 2, we ask “To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? (musicality = danceability, energy, speechiness, and tempo)“, Multiple Logistic Regression will be conducted for following reasons:
+*1. Our research question includes response variable that is categorical, namely explicitness and non-explicitness, with multiple predictors.
+*2. It can model the probability that the song belongs to a particular category, namely explicitness or non-explicitness. For this, we will set the cutoff point with 0.5 for predicting explicitness.
 
+Pre-processing: 
+
+To make prediction, we will split our dataset into training set and test test. More specifically, our training set will consist of songs released in 2001-2008, while our test-set will be made up of songs between 2009 and 2010. Additionally, we will set the response variable into factor (explicitness = 1, non-explicitness = 0).
+
+Model-fitting
+
+After the regression model fit, in order to check whether the fitting process is valid, we will perform a VIF calculation to see if there is peculiar score higher than 5.0. If yes, it suggests potential multi-collinearity, and we may consider refitting the regression model.
+Evaluation.
+
+Evaluation:
+
+To evaluate our result from logistic regression, we will calculate the accuracy, plot the ROC curve with AUC value. We will then be able to know how well is the model predicting explicitness and non-explicitness (1 vs 0) from the out-of-sample predicted probabilities (year 2009-2010).
 
 
 • Variable selection: How will you perform variable selection for your models? For each research
