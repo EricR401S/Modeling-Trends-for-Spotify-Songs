@@ -19,7 +19,16 @@ Markdown, and include the following:
 
 • Overview: Briefly describe the dataset and research questions.
 
+The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. Our final subset of the data set of interest to our research problems contains `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019.
+Our focus in this research is to infer which features of music are best associated to the popularity of songs and to predict if a song will be explicit or not based on these features. Our Research Questions:
 
+-What are the musical attributes that gauged the popularity of songs in the 2010s? 
+*Dependent Variable (continuous) = popularity;*
+*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
+ 
+-To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
+*Dependent Variable (categorical) = Explicitness;*
+*Independent Variables = danceability, energy, speechiness, and tempo* 
 
 
 
@@ -85,5 +94,8 @@ As for the second research question, the explicitness of tracks is strongly sway
 
 
 • Challenges: How do you plan to address the challenges you presented in part 1?
+
+In part I we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs in 2018 - 2019 years are more often presented in explicit form than non-explicit form, meaning that the training for inexplicit songs could be limited by fewer explicit data points. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. 
+
 An example of a statistical analysis plan is posted in Lessons on Sakai. The “primary analysis” and “sec-
 ondary analysis” sections can serve as guides for how to discuss what kinds of models will be fit and why.
