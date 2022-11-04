@@ -48,7 +48,7 @@ As for the second research question, we hypothesized that the explicitness of tr
 
 ## Challenges
 1. In part I we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs in 2018 - 2019 years are more often presented in explicit form than non-explicit form, meaning that the training for inexplicit songs could be limited by fewer explicit data points. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. 
-
+ 
 <<<<<<< HEAD
 2. According to the correlation matrix, there is a strong negative relationship between energy and acousticness, with a value of -0.68. (see Appendix 1). This could be a source of multicollinearity; however, because the value is less than 0.8 we shall hold off discarding any of the variables. If both energy and acousticness remain in our final model, we shall still check for multicollinearity using the Variance Inflation Factor (VIF) and resolve any issues by dropping the one with a VIF of 5 and above.
 =======
