@@ -49,7 +49,13 @@ As for the second research question, we hypothesized that the explicitness of tr
 ## Challenges
 1. In part I we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs in 2018 - 2019 years are more often presented in explicit form than non-explicit form, meaning that the training for inexplicit songs could be limited by fewer explicit data points. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. 
 
+<<<<<<< HEAD
 2. According to the correlation matrix, there is a strong negative relationship between energy and acousticness, with a value of -0.68. (see Appendix 1). This could be a source of multicollinearity; however, because the value is less than 0.8 we shall hold off discarding any of the variables. If both energy and acousticness remain in our final model, we shall still check for multicollinearity using the Variance Inflation Factor (VIF) and resolve any issues by dropping the one with a VIF of 5 and above.
+=======
+• Challenges: How do you plan to address the challenges you presented in part 1?
+
+In part I, we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs from the 2017-19 range present more explicitness than non-explicitness, meaning that training for explicit songs could be limited by fewer explicit data points found in the older half of the 10s decade. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. Another challenge is how the same artists can monopolize the most popular songs categories. In our case, that is beyond the scope of our study, given that we care about the musical attributes that make the songs popular, not the celebrities singing them; however, it is a great avenue for exploration, for which suggestions will be recommended at the conclusion of this formal study. As for the last challenge, it is the discovery of multicollinearity between our predictors. Our solution is to run Variable Inflation Factor (VIF) tests and remove variables with VIFs higher than 10.
+>>>>>>> 356b5f069cb1ad3c4c949cc3efad6f0e0965d964
 
 ```{r echo=FALSE, message = FALSE}
 
