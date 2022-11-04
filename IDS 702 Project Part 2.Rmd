@@ -83,27 +83,9 @@ To evaluate our result from logistic regression, we will calculate the accuracy 
 
 • Variable selection: How will you perform variable selection for your models? For each research question, list any variables that you are selecting a priori to be included in your model.
 
-Note : I am working on truncating and rewriting this part - Eric, still on the first paragraph. I will probably have to restate everything, and she talked about citing, so yes, this is essentially a paraphrase + rewrite.
+For both questions, domain knowledge of musical terminology played the most important role in doing “a priori” selection for the predictors. Regarding the first question, we are investigating if the aforementioned musical attributes have an associative relationship with popularity. Popular songs, whether they are an emotional ballad or a dance track, have an assortment of features that keep the listeners engaged and interested (Leviatan, 2017). Tempo, energy and loudness command the pacing and sonic impact of the song. Speechiness, danceability, instrumentation, and acousticness pertain to the selections and progressions of chord structures, melodies, and vocal and instrumental arrangements. All of these features are regulated by their context, meaning that the genre of music governs how much of each feature is present in a track. For example, an instrumental song, like a Star Wars theme song, has a speechiness of zero, since no vocals are present (Androids, 2017). In short, we are interested in determining if the any or most of these factors exercise an influence over the popularity of songs. In addition, we will also determine which predictors will remain in the final model via backwards selection, which will further narrow down our predictors to the most essential ones. 
 
-Our Research Questions:
-<ul>
--Q1: What are the musical attributes that gauged the popularity of songs in the 2010s? 
-*Dependent Variable (continuous) = popularity;*
-*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
- <ul>
-
-Firstly, domain knowledge of musical terminology was helpful in choosing the specific predictors for both research questions. For the first question, we are investigating if the aforementioned musical attributes have a an associative relationship with popularity. Popular songs, whether they are an emotional ballad or a dance track, all have certain features to keep the listeners engaged and interested (Leviatan, 2017). The tempo, energy and loudness indicate the pacing and sonic impact and pleasantness of the track. The speechiness, danceability and instrumentation (which also includes acoustic choices or "acousticness") dictate melody choices, chord progressions, instrument choices, wordings, vocal lines and more types sonic layers. However, the latter is very nuanced because it pertains to the genre choice of the producers. There are very popular songs with high instrumentation, no words and low danceability, such as songs from classical music. On the other hand, Pop and Rock songs vary their levels of instrumentation and acousticness and speechiness. Lastly, if the song is aimed towards a festive audience, such as a club song, then prioritizing danceability governs the levels of instrumentation and speechiness and lack of acousticness, and this prioritization varies by genre (Androids, 2017). In conclusion, the interplay of these factors influences the popularity of songs by making them memorable and enticing. 
-
-Note here : Backwards/Stepwise Selection
-
--Q2: To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
-<ul>
-*Dependent Variable (categorical) = Explicitness;*
-*Independent Variables = danceability, energy, speechiness, and tempo* 
-<ul>
-
-As for the second research question, the explicitness of tracks is strongly swayed by other factors. A very logical approach to predicting explicitness was first looking at the high levels of speechiness in songs. For example, rap songs rank high in this metric because the verses are composed of a spoken word format over a series of 8 or 16 bars, and each bar is a rap line (Edwords), while singing doesn't have to adhere to the "1 bar = 1 line" rule; thus, speechiness became the metric of most importance. In addition, songs in this genre tend to include explicit content, often sexual, in the lyrics (Tayag, 2017). Second to this metric, the other predictors of danceability, energy and tempo were considered as helpful in predicting explicitness. The energy and danceability of the song collude with speechiness to infer if a track could have explicit language. For example, a song with low energy and low danceability may or may not be less likely to have explicit language than a song with high energy and danceability, holding the speechiness level constant, and this is a relationship we wish to investigate as well. As for tempo, music genres that are known to include explicit language follow specific tempos. For instance, Trap songs usually have a tempo of 140 bpm (Burchell, 2019).
-
+As for the second research question, we hypothesized that the explicitness of tracks, the presence of inappropriate language, was most swayed by the following factors. High levels of speechiness and specific tempos in songs are strong indicators. For example, rap songs are a likely candidate for explicitness for three reasons. The verses are composed in a spoken word format over a series of 8 or 16 bars (Edwords), and they can sometimes follow a specific tempo (Burchell, 2019), and songs in general, beyond this genre, have become more explicit over time, especially sexual in nature (Tayag, 2017). For energy and danceability, our last two predictors, we hypothesize, based on the current songs charting on the Hot 100 (Billboard, 2022), that they collude with explicitness because an energetic song could be more likely to feature explicit language than a less energetic song. For these reasons, we choose these variables as predictors for explicitness.
 
 
 • Challenges: How do you plan to address the challenges you presented in part 1?
@@ -112,3 +94,25 @@ In part I we proposed one limitation that our “explicitness" as a dependent va
 
 An example of a statistical analysis plan is posted in Lessons on Sakai. The “primary analysis” and “sec-
 ondary analysis” sections can serve as guides for how to discuss what kinds of models will be fit and why.
+
+
+
+\newpage
+
+# Bibliography
+
+Androids (2017, October 13). An Idiot’s Guide to EDM Genres. Retrieved October 20, 2022, from https://www.complex.com/music/an-idiots-guide-to-edm-genres/
+
+Billboard. (2022, October 29). Billboard Hot 100. Billboard Media. Retrieved November 3, 2022. https://www.billboard.com/charts/hot-100/2022-10-29/
+
+Burchell, C. (2019, May 27). 10 Tips for Making Your First Trap Beat. Inverse. Retrieved October 20, 2022, from https://flypaper.soundfly.com/produce/10-tips-for-making-your-first-trap-beat/#
+
+Edwords, E. (n.d.). Rap Song Structure Is TOO Important To Ignore. Retrieved October 20, 2022, from https://rhymemakers.com/rap-song-structure/
+
+Leviatan, Y. (2017, July 27). Making Music: The 6 Stages of Music Production. Waves. Retrieved October 20, 2022, from https://www.waves.com/six-stages-of-music-production
+
+Spotify (2022). Spotify Web API Reference | Spotify for Developers. https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
+
+Tayag, Y. (2017, May 17). Expert on Male Psychology Explains How Pop Got Sexually Explicit. Retrieved October 20, 2022, from https://www.inverse.com/article/31842-pop-music-sexually-explicit-lyrics-rap-hip-hop
+
+Yamac. (2016). Spotify Dataset 1921-2020, 600k+ Tracks. Spotify. Retrieved October 3, 2022, from https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks
