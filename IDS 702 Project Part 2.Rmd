@@ -90,10 +90,7 @@ As for the second research question, we hypothesized that the explicitness of tr
 
 • Challenges: How do you plan to address the challenges you presented in part 1?
 
-In part I we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs in 2018 - 2019 years are more often presented in explicit form than non-explicit form, meaning that the training for inexplicit songs could be limited by fewer explicit data points. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. 
-
-An example of a statistical analysis plan is posted in Lessons on Sakai. The “primary analysis” and “sec-
-ondary analysis” sections can serve as guides for how to discuss what kinds of models will be fit and why.
+In part I, we proposed one limitation that our “explicitness" as a dependent variable does not have even distribution over years. Specifically, songs from the 2017-19 range present more explicitness than non-explicitness, meaning that training for explicit songs could be limited by fewer explicit data points found in the older half of the 10s decade. Thus, one way to decrease the drawback is that when logistic regression is conducted, our train set will only include years from 2010-2017, so that the training process would have less unequal proportion of explicit and inexplicit songs. Another challenge is how the same artists can monopolize the most popular songs categories. In our case, that is beyond the scope of our study, given that we care about the musical attributes that make the songs popular, not the celebrities singing them; however, it is a great avenue for exploration, for which suggestions will be recommended at the conclusion of this formal study. As for the last challenge, it is the discovery of multicollinearity between our predictors. Our solution is to run Variable Inflation Factor (VIF) tests and remove variables with VIFs higher than 10.
 
 
 
