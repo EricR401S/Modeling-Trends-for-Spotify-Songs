@@ -39,6 +39,13 @@ Our focus in this research is to infer which features of music are best associat
 
 
 
+In our Research Question 1, our goal is to infer the musical attributes that are most important in guaging the popularity of the song in the 2010s decade. The analysis will be performed with the predictor variables- acousticness, danceability, energy, instrumentation,tempo, loudness, and speechiness and the response variable as popularity. 
+
+Dependent Variable : Our response variable of interest is *popularity* which is a continuous variable that is based on how many times a track has been played.
+
+Independent Variable: The independent predictor variables chosen are based on domain knowledge. The independent variables are *acousticness*, *danceability*, *energy*, *instrumentation*, *tempo*, *loudness*, and *speechiness*. These are musical attributes of the tracks that can most contribute to popularity, our response variable. 
+
+Multiple Linear Regression: Multiple linear regression (MLR) is a statistical technique that uses several independent explanatory variables to predict the outcome of a response variable. The goal of this analysis is to model the linear relationship between the independent variables and the dependent variables.
 
 
 
