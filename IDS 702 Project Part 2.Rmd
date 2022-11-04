@@ -50,8 +50,8 @@ Multiple Linear Regression: Multiple linear regression (MLR) is a statistical te
 Multiple Linear Regression will be conducted for RQ1 due to the following reasons: 
 
 *1. A dependent variable is rarely explained by only one variable. Here too, multiple musical attributes (predictor variables) are taken in consideration for guaging the popularity(dependent variable), so MLR is performed on the same. 
-*2. The nature of both the response variable is continuous making it best fit for performing Linear Regression.
-*2. From the Exploratory Data Analysis we can observe that there is some relation between the variables with the outcome, which we will probe further in the MLR model analysis. 
+*2. The nature of the response variable is continuous making it best fit for performing Linear Regression.
+*3. From the Exploratory Data Analysis we can observe that there is some relation between the variables with the outcome, which we will probe further in the MLR model analysis. 
 
 
 
