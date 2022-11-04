@@ -47,6 +47,12 @@ Independent Variable: The independent predictor variables chosen are based on do
 
 Multiple Linear Regression: Multiple linear regression (MLR) is a statistical technique that uses several independent explanatory variables to predict the outcome of a response variable. The goal of this analysis is to model the linear relationship between the independent variables and the dependent variables.
 
+Multiple Linear Regression will be conducted for RQ1 due to the following reasons: 
+
+*1. A dependent variable is rarely explained by only one variable. Here too, multiple musical attributes (predictor variables) are taken in consideration for guaging the popularity(dependent variable), so MLR is performed on the same. 
+*2. The nature of both the response variable is continuous making it best fit for performing Linear Regression.
+*2. From the Exploratory Data Analysis we can observe that there is some relation between the variables with the outcome, which we will probe further in the MLR model analysis. 
+
 
 
 
