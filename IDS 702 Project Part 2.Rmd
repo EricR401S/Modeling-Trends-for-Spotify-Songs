@@ -50,15 +50,19 @@ As for the second research question, we hypothesized that the explicitness of tr
 
 2. According to the correlation matrix, there is a strong negative relationship between energy and acousticness, with a value of -0.68. (see Appendix 1). This could be a source of multicollinearity; however, because the value is less than 0.8 we shall hold off discarding any of the variables. If both energy and acousticness remain in our final model, we shall still check for multicollinearity using the Variance Inflation Factor (VIF) and resolve any issues by dropping the one with a VIF of 5 and above.
 
-```{r echo=FALSE, message = FALSE}
 
+\newpage
+
+## Appendix
+
+### Appendix 1
+
+```{r echo=FALSE, message = FALSE}
 cordf1 = cor(df1)
 corrplot(cordf1, method = 'number')
 ```
 
-\newpage
-
-# Bibliography
+## Bibliography
 
 Androids (2017, October 13). An Idiot’s Guide to EDM Genres. Retrieved October 20, 2022, from https://www.complex.com/music/an-idiots-guide-to-edm-genres/
 
