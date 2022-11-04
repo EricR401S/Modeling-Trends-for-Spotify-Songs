@@ -58,7 +58,7 @@ As for the second research question, we hypothesized that the explicitness of tr
 ### Appendix 1
 
 ```{r echo=FALSE, message = FALSE}
-df1 <- read.csv("rq1.csv")
+df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
 cordf1 = cor(df1)
 corrplot(cordf1, method = 'number')
 ```
