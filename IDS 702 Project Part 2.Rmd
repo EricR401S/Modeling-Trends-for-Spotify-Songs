@@ -12,32 +12,28 @@ knitr::opts_chunk$set(echo = TRUE)
 # STATISTICAL PLAN FOR MODELLING POPULARITY AND EXPLICITY OF 2010s MUSIC THROUGH MUSICALITY
 
 ## Overview
-The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. Our final subset of the data set of interest to our research problems contains `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019.
-Our focus in this research is to infer which features of music are best associated to the popularity of songs and to predict if a song will be explicit or not based on these features by asking what are the musical attributes that gauged the popularity of songs in the 2010s? and to what extent can the musicality of a song predict whether a song will be explicit or non-explicit?.In this statistical plan we shall explore two types of models that will be used to answer our research questions, elaborate how variables were selected and potential remedies for any arising challenges.
+The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767observations/tracks and 23 of variables for songs between 2010 and 2019.
+Our focus in this research is to infer which features of music are best associated to the popularity of songs and to predict if a song will be explicit or not based on these features by asking what are the musical attributes that gauged the popularity of songs in the 2010s and to what extent can the musicality of a song predict whether a song will be explicit or non-explicit.In this statistical plan we shall explore two types of models that will be used to answer our research questions, elaborate how variables were selected and potential remedies for any arising challenges.
 
 ## Model Selection
 
 The first research question seeks to identify which musical characteristics are most important in determining a song's popularity in the 2010s decade. Acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness will be used as predictor variables, with popularity as the response variable. Popularity is a continuous variable ranging from 0 to 100, calculated by an algorithm based on how many times a track has been played and how recent those plays were, and can be explained by multiple musical attributes. Given that we observed a relationship in the exploratory data analysis, we will build a multiple linear regression model to investigate the nature of this relationship.
 
-### Pre processing
+- **Pre processing**
 To begin building the model, we shall examine the relationships between each musical attribute and popularity using scatter plots and correlation matrices to see if there is a linear relationship between each attribute and popularity. Then, we shall look into the relationships between the music attributes themselves, keeping an eye out for any potential sources of multicollinearity.
-
-### Modelling
+- **Modelling**
 The initial model will include all seven music attributes and will go through a backward selection process with AIC to determine the best indicators of popularity. Because AIC imposes a lower penalty for having multiple independent variables, we chose it to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC will be selected and fitted. At this point, we shall run a Variance Inflation Factor (VIF) to investigate multicollinearity in the model.
 We shall then examine the estimated coefficients to quantity understand the relationship between popularity and each of the music attributes, p values to check if these relationships are statistically significant and the coefficients confidence intervals to confirm if we can reject the null hypothesis for each of the coefficient estimates' true values.
-
-### Evaluation
+- **Evaluation**
 The model will then be checked for the assumptions of linearity, equal variance and independence of error terms, and normality of residuals, and if any of these appear to be strongly violated, appropriate transformations or methods with supporting reasoning will be performed. A completed model will be created and presented.
 
 The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. To accomplish this, we will employ multiple logistic regression.
 
-### Pre processing
+- **Pre processing**
 In order to generate the predictive probabilities, we shall split our data set into train set and test set. More specifically, our train set will consist of songs released in 2010-2017 and will be used to fit our model, while our test set will be made up of songs between 2018 and 2019. Additionally, we shall set the response variable as a factor (explicitness = 1, non-explicitness = 0).
-
-### Model fitting
+- **Modelling**
 After the regression model is fit, we shall check for multicollinearity using Variable Inflation Factor (VIF) and if there is at least one predictor with a score higher than 5 that suggests high multicollinearity we shall refit the regression model without that predictor.At this stage, we shall also examine the binned residuals plot, to verify that the data falls within the band of a 95% confidence interval. If the majority of the points are not contained within those bands, an appropriate transformation will be made.As for the assumptions, we shall assess independence. Lastly, the difference between the null deviance and residual deviance will be conducted to assess the overall fit.
-
-### Evaluation
+- **Evaluation**
 To evaluate our result from logistic regression, we shall calculate the accuracy of our predictive probabilities, plot the ROC curve and generate the AUC value. We will then be able to know how well the model predicted the probabilities of explicitness and non-explicitness (1 vs 0) for the out-of-sample, test data (year 2018-2019). After this initial assessment, we will proceed into a k-fold cross-validation stage, where the entirety of the data, segmented into an arbitrary number of groups, will be divided into training and test sets and have a logistic regression model fitted to it at each step, until all the groups of data points have been part of both a training and test set. After the cross-validation is completed, we will finally be able to ascertain the overall success of the model's predictive accuracy, which is a metric gathered from all of the accuracies of the models fitted during the cross-validation test. 
 
 ## Variable selection
@@ -57,7 +53,8 @@ As for the second research question, we hypothesized that the explicitness of tr
 
 ### Appendix 1
 
-```{r echo=FALSE, message = FALSE}
+```{r echo=FALSE, message = FALSE, out.width= "60%" }
+library(corrplot)
 df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
 cordf1 = cor(df1)
 corrplot(cordf1, method = 'number')
