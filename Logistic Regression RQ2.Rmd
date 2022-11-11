@@ -39,6 +39,8 @@ summary (r1)
 ```{r}
 df2 <-  read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq2.csv")
 df2$explicit_fac <- factor(df2$explicit_fac)
+keeps <- c("explicit_fac", "danceability", "energy", "speechiness", "tempo")
+df2 <- df2[keeps]
 ```
 
 ```{r}
@@ -53,3 +55,8 @@ stargazer(Accuracy, type = "text", summary = FALSE, header = FALSE)
 
 invisible(roc(df2$explicit_fac,fitted(r2),plot=T,print.thres="best",legacy.axes=T, print.auc =T,col="red3"))
 ```
+```{r}
+a <- vif(r2) 
+stargazer(a, type = "text", summary = FALSE)
+```
+
