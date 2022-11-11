@@ -37,30 +37,19 @@ summary (r1)
 
 ```
 ```{r}
-df2c <- data.frame(df2)
-r2 <- glm(explicit_fac ~ ., data = df2c , family = binomial(link = logit))
-summary(r2)
-predprob <- predict(r2, df2c, type = 'response')
-
-df2c$exp_conv <- rep(0,nrow(df2c))
-df2c$exp_conv[df2c$explict_fac=="Explicit"] <- 1
-
-library(car)
-library("Hmisc")
-library(caret)
-library(arm)
-library(pROC)
-library(e1071)
-
-Conf_mat_v2 <- confusionMatrix(as.factor(ifelse(fitted(r2)>=0.5, "Explicit", "Non-Explicit")),df2c$explicit_fac, positive = "Explicit")
-
-Conf_mat_v2$table
-
-Conf_mat_v2$overall['Accuracy']
-
-Conf_mat_v2$byClass[c('Sensitivity', 'Specificity')]
-
-
-invisible(roc(df2c$exp_conv, fitted(r2),print.thres = '0.5', plot = T, legacy.axes = T, print.auc = T, col = "red3", main = "ROC Curve for Explicit -  Logistic Regression Model"))
+df2 <-  read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq2.csv")
+df2$explicit_fac <- factor(df2$explicit_fac)
 ```
 
+```{r}
+r2 <- glm(explicit_fac ~ ., data = df2 , family = binomial(link = logit))
+
+Conf_mat <- confusionMatrix(as.factor(ifelse(fitted(r2) >= 0.5, "Non-Explicit", "Explicit")), df2$explicit_fac, positive = "Explicit")
+ConfMat <- as.data.frame.matrix(Conf_mat$table)
+Accuracy <- Conf_mat$overall["Accuracy"]
+
+stargazer(ConfMat, summary = FALSE, type = "text", title = "confusion matrix", header = FALSE)
+stargazer(Accuracy, type = "text", summary = FALSE, header = FALSE) 
+
+invisible(roc(df2$explicit_fac,fitted(r2),plot=T,print.thres="best",legacy.axes=T, print.auc =T,col="red3"))
+```
