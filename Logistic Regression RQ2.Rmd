@@ -1,0 +1,67 @@
+---
+title: "Untitled"
+author: "Eric Rios"
+date: "2022-11-11"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+```{r}
+r1 <- lm(popularity ~., data = df1)
+summary (r1)
+
+```
+```{r}
+df2c <- data.frame(df2)
+r2 <- glm(explicit_fac ~ ., data = df2c , family = binomial(link = logit))
+summary(r2)
+predprob <- predict(r2, df2c, type = 'response')
+
+df2c$exp_conv <- rep(0,nrow(df2c))
+df2c$exp_conv[df2c$explict_fac=="Explicit"] <- 1
+
+library(car)
+library("Hmisc")
+library(caret)
+library(arm)
+library(pROC)
+library(e1071)
+
+Conf_mat_v2 <- confusionMatrix(as.factor(ifelse(fitted(r2)>=0.5, "Explicit", "Non-Explicit")),df2c$explicit_fac, positive = "Explicit")
+
+Conf_mat_v2$table
+
+Conf_mat_v2$overall['Accuracy']
+
+Conf_mat_v2$byClass[c('Sensitivity', 'Specificity')]
+
+
+
+invisible(roc(df2c$exp_conv, fitted(r2),print.thres = '0.5', plot = T, legacy.axes = T, print.auc = T, col = "red3", main = "ROC Curve for Explicit -  Logistic Regression Model"))
+```
+
