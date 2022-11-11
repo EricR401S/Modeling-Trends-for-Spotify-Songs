@@ -1,0 +1,76 @@
+---
+title: "STATISTICAL PLAN FOR MODELLING POPULARITY AND EXPLICITY OF 2010s MUSIC THROUGH MUSICALITY"
+author: "Eric Rios, Emma Wang, Pragya Raghuvanshi, Lorna Aine"
+date: "2022-11-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019. Our focus for this research is to infer which musical features are best associated to the popularity of songs in the 2010s and to what extent can another musical set of features predict if a song, regardless of year, will be explicit or not. In this statistical plan, we shall explore two types of models to answer the research questions, and elaborate how variables were selected and suggest potential remedies for any arising challenges.
+
+## Model Selection
+The first research question aims to identify which musical characteristics are most important in determining a song's popularity, the response variable, in the 2010s decade. Acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness will be used as predictors. Popularity, a continuous variable, ranges from 0 to 100, and is calculated by an algorithm based on a track's play count and recency of plays, which can be explained by multiple musical attributes. Given that we observed a relationship in the exploratory data analysis, a multiple linear regression model will be used to investigate this relationship.
+
+- **Pre-processing**
+To begin building the model, we shall examine the relationships between each musical attribute and popularity using scatter plots and correlation matrices to see if there is a linear relationship between each attribute and popularity. Then, we shall look into the relationships between the musical attributes themselves, keeping an eye out for any potential sources of multicollinearity.
+
+- **Modelling**
+The initial model will include all seven predictors and will go through a backward selection process with AIC to determine the best indicators of popularity. Because AIC imposes a lower penalty for having multiple independent variables, we chose it to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC will be selected and fitted. We shall run a Variance Inflation Factor (VIF) to investigate multicollinearity in the model. We shall then examine the estimated coefficients to quantitatively understand the relationship between popularity and each of the predictors, P-values to check if these relationships are statistically significant and the coefficients' confidence intervals.
+
+- **Evaluation**
+The model will then be checked for the assumptions of linearity, equal variance and independence of error terms, and normality of residuals, and if any of these appear to be strongly violated, appropriate transformations or methods with supporting reasoning will be performed. A completed model will be created and presented.
+
+The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. To accomplish this, we will employ multiple logistic regression.
+
+- **Pre-processing**
+In order to generate the predictive probabilities, we shall split our data set into train set and test set. More specifically, our train set will consist of songs released in 2010-2017 and will be used to fit our model, while our test set will contain songs between 2018 and 2019. Additionally, we shall set the response variable as a factor (explicitness = 1, non-explicitness = 0).
+
+- **Modelling**
+After the regression model is fit, we shall check for multicollinearity using a VIF test. If there is at least one predictor with a score higher than 5, it suggests high multicollinearity, and the model shall be refit without that predictor. At this stage, we shall also examine the binned residuals plot, to verify that the data falls within the band of a 95% confidence interval. If the majority of the points are not contained within those bands, an appropriate transformation will be made. Then, we shall assess independence. Lastly, a deviance test between the null and final model will be conducted to assess the quality of the overall fit.
+
+- **Evaluation**
+To evaluate our result from logistic regression, we shall calculate the accuracy of our predictive probabilities, plot the ROC curve and generate the AUC value. We will then be able to know how well the model predicted the probabilities of explicitness and non-explicitness (1 vs 0) for the out-of-sample, test data (year 2018-2019). After this initial assessment, we will create a confusion matrix and plot the ROC to obtain the AUC value, the final measure of how well the model is classifying positives and negatives.   
+
+## Variable selection
+For both questions, domain knowledge of musical terminology helped in choosing the given predictors. For the first question, we are investigating if the aforementioned musical attributes have an associative relationship with popularity. Popular songs have an assortment of features that keep the listeners engaged and interested (Leviatan, 2017). Tempo, energy and loudness command a song's impact and pacing. Speechiness, danceability, instrumentation, and acousticness pertain to the selections of chord structures, vocal, instumental, and melodic arrangements. These features are regulated by the song's genre of music. For example, an instrumental song, like a Star Wars theme song, has a speechiness of zero, since no vocals are present (Androids, 2017). In short, we are interested in determining if any or most of these factors have an influence over the popularity of songs. As for the second research question, high levels of speechiness and specific tempos in songs are strong indicators. For example, rap songs are a likely candidate for explicitness for three reasons: the high volume of spoken words (Edwords), following a specific tempo (Burchell, 2019), and the general rise of explicitness in songs over time (Tayag, 2017). Lastly, for our final predictors, we think that energy and danceability, based on top songs in the Hot 100 (Billboard, 2022), collude with explicitness because an energetic song could be more likely to feature explicit language than a less energetic song.
+
+## Challenges
+1. During the exploratory data analysis, we noted that the “explicitness" as a response variable does not have even distribution over years. Specifically, songs in 2018 - 2019 years are more often presented in an explicit than non-explicit category, meaning that the train set for the logistic regression model could potentially be affected by limited explicit data points. To address this drawback, we shall only include years from 2010-2017 in the train set, so that the training process would have less unequal proportion of explicit and non-explicit songs. 
+
+2. According to the correlation matrix, there is a strong negative relationship between energy and acousticness, with a value of -0.68. (see Appendix 1). This could be a source of multicollinearity; however, because the value is less than 0.8 we shall hold off discarding any of the variables. If both energy and acousticness remain in our final model, we shall still check for multicollinearity using a VIF test and resolve any issues by dropping the one with a VIF of 5 and above.
+
+
+\newpage
+
+## Appendix
+
+### Appendix 1
+
+```{r echo=FALSE, message = FALSE, out.width= "60%" }
+library(corrplot)
+df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
+cordf1 = cor(df1)
+corrplot(cordf1, method = 'number')
+```
+
+## Bibliography
+
+Androids (2017, October 13). An Idiot’s Guide to EDM Genres. Retrieved October 20, 2022, from https://www.complex.com/music/an-idiots-guide-to-edm-genres/
+
+Billboard. (2022, October 29). Billboard Hot 100. Billboard Media. Retrieved November 3, 2022. https://www.billboard.com/charts/hot-100/2022-10-29/
+
+Burchell, C. (2019, May 27). 10 Tips for Making Your First Trap Beat. Inverse. Retrieved October 20, 2022, from https://flypaper.soundfly.com/produce/10-tips-for-making-your-first-trap-beat/#
+
+Edwords, E. (n.d.). Rap Song Structure Is TOO Important To Ignore. Retrieved October 20, 2022, from https://rhymemakers.com/rap-song-structure/
+
+Leviatan, Y. (2017, July 27). Making Music: The 6 Stages of Music Production. Waves. Retrieved October 20, 2022, from https://www.waves.com/six-stages-of-music-production
+
+Spotify (2022). Spotify Web API Reference | Spotify for Developers. https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
+
+Tayag, Y. (2017, May 17). Expert on Male Psychology Explains How Pop Got Sexually Explicit. Retrieved October 20, 2022, from https://www.inverse.com/article/31842-pop-music-sexually-explicit-lyrics-rap-hip-hop
+
+Yamac. (2016). Spotify Dataset 1921-2020, 600k+ Tracks. Spotify. Retrieved October 3, 2022, from https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks
