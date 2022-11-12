@@ -177,6 +177,7 @@ TBW (Copy Paste with Citations)
 Describe the process you used to conduct analysis. This includes EDA and any relevant
 data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
 
+P.S. I noticed the results have to be moved to the results section. I'm just writing them together and splitting them later. 
 
 For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two values. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the song's explicitness or non-explicitness (cite). 
 
@@ -216,7 +217,11 @@ VIF table
 
 
 
-Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. 
+Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 25,822 non-explicit songs and 762 explicit songs. It had an overall, low accuracy of 18.4%, a sensitivity of 1.7% and a specificity of 87.8%. The sensitivity value signifies that our model is inefficient at identifying non-explicit songs, while our specificity value identifies the opposite, where our explicit songs are classified with greater accuracy.
+
+
+NOTE : Ask Andrea about this oddity. Shouldn't our model be terrible at identifying explicit songs, not non-explicit? I checked the distribution (hard numbers) of our test set, and they looked reasonable. Sensitivity is true positives, and specificity is true negatives. 
+
 
 
 ROC plot here
