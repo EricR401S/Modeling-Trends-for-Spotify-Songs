@@ -150,7 +150,7 @@ data cleaning information (e.g., did you exclude missing values? If so, how many
 
 P.S. I noticed the results have to be moved to the results section. I'm just writing them together and splitting them later. 
 
-For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two values. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the song's explicitness or non-explicitness (cite). 
+For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two values. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study (cite). 
 
 The interpretations : 
 
@@ -158,7 +158,7 @@ As discussed previously, a low P-value is a sign that our predictor variable has
 
 In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit...
 
-1. increase by 8.40 times for every unit increase in the Danceability predictor.
+1. increase by 8.40 times for every unit increase in the danceability predictor.
 
 2. increase by 2.18 times for every unit increase in the energy predictor. 
 
@@ -166,7 +166,7 @@ In terms of interpreting the coefficients, holding all other variables constant,
 
 4. decrease by 0.94 times for every unit increase in the tempo predictor.
 
-The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo implies that, as a song becomes slower, it will be less likely to have explicit lyrics. 
+The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo's odds indicate that, as a song becomes slower, it will be less likely to have explicit lyrics. 
 
 
 
@@ -188,10 +188,11 @@ VIF table
 
 
 
-Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 25,822 non-explicit songs and 762 explicit songs. It had an overall, low accuracy of 18.4%, a sensitivity of 1.7% and a specificity of 87.8%. The sensitivity value signifies that our model is inefficient at identifying non-explicit songs, while our specificity value identifies the opposite, where our explicit songs are classified with greater accuracy.
+Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
 
+Lorna's Explanation - Asking for verification
 
-NOTE : Ask Andrea about this oddity. Shouldn't our model be terrible at identifying explicit songs, not non-explicit? I checked the distribution (hard numbers) of our test set, and they looked reasonable. Sensitivity is true positives, and specificity is true negatives. 
+Since our model is weak at identifying explicit songs, what does this mean for our study? Firstly, there was a smaller distribution of explicit songs; however, this pattern is indicative of music in the real world because the majority of songs are non-explicit. Secondly, more or better predictors may have been needed for this particular research question. Thirdly, is it critical for this model to predict these songs' explicitness accurately? No. Spotify likely employs the use of speech recognition (natural language processing) models to flag the explicitness of songs, not statistical methods. However, since the intent of the research question is predictive, these results do prove that our model is insufficient for predicting the explicitness of songs, but very successful when classifying the non-explicitness of songs.    
 
 
 
