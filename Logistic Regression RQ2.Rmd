@@ -119,16 +119,24 @@ test <- test[keeps]
 train <- train[keeps]
 ```
 
-```{r}
+```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
 r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
-test_fitted <- predict(r2, newdata = test, type = "response")
-test_fitted <- ifelse(test_fitted >= 0.5, "Non-Explicit", "Explicit")
+test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
+test_fitted <- ifelse(test_fitted_0 >= 0.5, "Non-Explicit", "Explicit") #Change here
 Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
 ConfMat3 <- as.data.frame.matrix(Conf_mat3$table)
 Accuracy3 <- Conf_mat3$overall["Accuracy"]
 stargazer(ConfMat3, summary = FALSE, type = "text", title = "Confusion Matrix")
 stargazer(Accuracy3, type = "text", summary = FALSE)
+invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
+
 ```
+
+```{r}
+
+```
+
+
 
 ```{r}
 # r2 <- glm(explicit_fac ~ ., data = df2 , family = binomial(link = logit))
@@ -193,6 +201,22 @@ The results here have logical sense. What is most impressive is how danceability
 ```{r}
 stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
 ```
+
+---------------------Might need a section here for the binned residuals------------------------------
+
+
+------------------------------------------/----------------------------------------------------------
+
+
+In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
+
+VIF table
+
+
+
+
+
+Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. 
 
 
 ROC plot here
