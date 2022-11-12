@@ -5,27 +5,9 @@ date: "2022-11-11"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
@@ -39,6 +21,12 @@ library(corrplot)
 library(dplyr)
 library(table1)
 library(boot)
+library(caret)
+library(arm)
+library(pROC)
+library(e1071)
+library(stargazer)
+library(car)
 ```
 
 ```{r subset, echo = FALSE, message=FALSE, results = FALSE}
@@ -115,10 +103,12 @@ RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo
 df2 = subset[RQ2_relation]
 ```
 
-```{r}
-df2$explicit_fac <- factor(df2$explicit_fac)
-keeps <- c("explicit_fac", "danceability", "energy", "speechiness", "tempo")
-df2 <- df2[keeps]
+```{r} 
+
+# Might not be needed
+# df2$explicit_fac <- factor(df2$explicit_fac)
+# keeps <- c("explicit_fac", "danceability", "energy", "speechiness", "tempo")
+# df2 <- df2[keeps]
 ```
 
 ```{r}
@@ -141,19 +131,89 @@ stargazer(Accuracy3, type = "text", summary = FALSE)
 ```
 
 ```{r}
-r2 <- glm(explicit_fac ~ ., data = df2 , family = binomial(link = logit))
-
-Conf_mat <- confusionMatrix(as.factor(ifelse(fitted(r2) >= 0.5, "Non-Explicit", "Explicit")), df2$explicit_fac, positive = "Explicit")
-ConfMat <- as.data.frame.matrix(Conf_mat$table)
-Accuracy <- Conf_mat$overall["Accuracy"]
-
-stargazer(ConfMat, summary = FALSE, type = "text", title = "confusion matrix", header = FALSE)
-stargazer(Accuracy, type = "text", summary = FALSE, header = FALSE) 
-
-invisible(roc(df2$explicit_fac,fitted(r2),plot=T,print.thres="best",legacy.axes=T, print.auc =T,col="red3"))
-```
-```{r}
+# r2 <- glm(explicit_fac ~ ., data = df2 , family = binomial(link = logit))
+# 
+# Conf_mat <- confusionMatrix(as.factor(ifelse(fitted(r2) >= 0.5, "Non-Explicit", "Explicit")), df2$explicit_fac, positive = "Explicit")
+# ConfMat <- as.data.frame.matrix(Conf_mat$table)
+# Accuracy <- Conf_mat$overall["Accuracy"]
+# 
+# stargazer(ConfMat, summary = FALSE, type = "text", title = "confusion matrix", header = FALSE)
+# stargazer(Accuracy, type = "text", summary = FALSE, header = FALSE) 
+# 
+# invisible(roc(df2$explicit_fac,fitted(r2),plot=T,print.thres="best",legacy.axes=T, print.auc =T,col="red3"))
+# ```
+# ```{r}
+library(car)
 a <- vif(r2) 
 stargazer(a, type = "text", summary = FALSE)
 ```
+Second Research Question Portion
 
+# Abstract: 
+A few sentences describing the purpose of the analysis, the data, and key results
+
+
+TBW
+
+
+
+#Introduction: Provide more background on the data and research questions. Be sure to cite the data
+and background information appropriately (APA style is fine)
+
+
+
+TBW (Copy Paste with Citations)
+
+
+# Methods
+Describe the process you used to conduct analysis. This includes EDA and any relevant
+data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
+
+
+For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two values. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the song's explicitness or non-explicitness (cite). 
+
+The interpretations : 
+
+As discussed previously, a low P-value is a sign that our predictor variable has an association with our outcome variable. Shown in our table below, our model's predictors are all statistically significant in predicitng a song's explicitness. 
+
+In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit...
+
+1. increase by 8.40 times for every unit increase in the Danceability predictor.
+
+2. increase by 2.18 times for every unit increase in the energy predictor. 
+
+3. increase by 10,855 times for every unit increase in the speechiness predictor.
+
+4. decrease by 0.94 times for every unit increase in the tempo predictor.
+
+The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo implies that, as a song becomes slower, it will be less likely to have explicit lyrics. 
+
+
+
+```{r}
+stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
+```
+
+
+ROC plot here
+
+Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
+
+Table (with accuracy and AUC values for test)
+
+
+
+# Results
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
+
+
+
+
+
+
+# Conclusion
+Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
+
+
+
+TBW
