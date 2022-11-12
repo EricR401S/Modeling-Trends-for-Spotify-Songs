@@ -5,9 +5,7 @@ date: "2022-11-11"
 output: pdf_document
 ---
 
-
 ## R Markdown
-
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
@@ -66,11 +64,9 @@ df$explicit_fac <- factor(df$explicit,
 df$release_year <- substr(df$release_date, 1, 4)
 df$release_year <- as.integer(df$release_year)
 
-#df$release_date <- as.Date(df$release_date, "%Y-%m-%d")
 
 # According to variable definitions, speechiness levels above 0.66 are speech tracks such as podcasts and poetries.
 # They will be removed.
-
 
 df0 <- df[df$speechiness <= 0.66,]
 nrow(df) - nrow(df0) #22,598 records of speech tracks
@@ -103,17 +99,9 @@ RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo
 df2 = subset[RQ2_relation]
 ```
 
-```{r} 
-
-# Might not be needed
-# df2$explicit_fac <- factor(df2$explicit_fac)
-# keeps <- c("explicit_fac", "danceability", "energy", "speechiness", "tempo")
-# df2 <- df2[keeps]
-```
-
 ```{r}
-train <- df2[df2$release_year < 2017,]
-test <- df2[df2$release_year >= 2017,]
+train <- df2[df2$release_year < 2018,]
+test <- df2[df2$release_year >= 2018,]
 keeps <- c("explicit_fac", "danceability", "energy", "speechiness", "tempo")
 test <- test[keeps]
 train <- train[keeps]
@@ -122,7 +110,7 @@ train <- train[keeps]
 ```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
 r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
 test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
-test_fitted <- ifelse(test_fitted_0 >= 0.5, "Non-Explicit", "Explicit") #Change here
+test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
 Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
 ConfMat3 <- as.data.frame.matrix(Conf_mat3$table)
 Accuracy3 <- Conf_mat3$overall["Accuracy"]
@@ -132,25 +120,8 @@ invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes
 
 ```
 
-```{r}
-
-```
-
-
 
 ```{r}
-# r2 <- glm(explicit_fac ~ ., data = df2 , family = binomial(link = logit))
-# 
-# Conf_mat <- confusionMatrix(as.factor(ifelse(fitted(r2) >= 0.5, "Non-Explicit", "Explicit")), df2$explicit_fac, positive = "Explicit")
-# ConfMat <- as.data.frame.matrix(Conf_mat$table)
-# Accuracy <- Conf_mat$overall["Accuracy"]
-# 
-# stargazer(ConfMat, summary = FALSE, type = "text", title = "confusion matrix", header = FALSE)
-# stargazer(Accuracy, type = "text", summary = FALSE, header = FALSE) 
-# 
-# invisible(roc(df2$explicit_fac,fitted(r2),plot=T,print.thres="best",legacy.axes=T, print.auc =T,col="red3"))
-# ```
-# ```{r}
 library(car)
 a <- vif(r2) 
 stargazer(a, type = "text", summary = FALSE)
