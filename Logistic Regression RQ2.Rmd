@@ -33,24 +33,18 @@ df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/r
 ```
 
 ```{r datacleaning, echo = FALSE, message=FALSE, results = FALSE }
-#Two columns of interest : Name of artist (if one wanted to highlight certain summary statistics), duration conversion (get minutes), the rest is perfect on its own. 
 
 # Confirming the data types of the columns
 sapply(df, class)
 
 # Removing the brackets from the names of the artists
-# This will facilitate summary statistics
-
 df$artists<-gsub("]","",as.character(df$artists))
 df$artists<-gsub("^.","",as.character(df$artists))
 
 # New minute variable for our own use to simplify interpretation
-
 df$duration_minutes <- df$duration_ms/(1000*60)
 
-
 # Confirming that there are no missing data, except the artist name column
-
 colSums(is.na(df))
 
 # change "explicit" into binary factor
@@ -59,22 +53,15 @@ df$explicit_fac <- factor(df$explicit,
                          labels=c('Non-Explicit','Explicit'))
 
 # make Date readable to R
-# Emma and Eric need to revise this together, some records with Dates passed as NAs in R after running this code.
-# That's the theory. It was single year dates.
 df$release_year <- substr(df$release_date, 1, 4)
 df$release_year <- as.integer(df$release_year)
 
-
 # According to variable definitions, speechiness levels above 0.66 are speech tracks such as podcasts and poetries.
-# They will be removed.
-
 df0 <- df[df$speechiness <= 0.66,]
 nrow(df) - nrow(df0) #22,598 records of speech tracks
 
 # Examining records with a value of 0 for tempo
-# A total of 328 records with 0 tempo were found, and most were tracks of rain sounds and introductions. 
-# Some were, unfortunately, real songs.
-
+# A total of 328 records with 0 tempo were found, and most were tracks of rain sounds and introductions.
 sum(df0$tempo==0)
 
 # 148 of those records are from the 2010s decade, our area of interest. 
@@ -83,21 +70,22 @@ tempo_0_subset_2010s <- tempo_0_subset[grep('201[0-9].*', tempo_0_subset$release
 nrow(tempo_0_subset_2010s)
 
 # Removing records with a value of 0 for tempo
-
 df0 <- df0[df0$tempo != 0,]
 ```
 
-```{r, echo = FALSE, message=FALSE, results = FALSE }
+```{r , echo=FALSE,results="asis", header=FALSE, message=FALSE, warning=FALSE}
 #subset data
 subset <- df0[grepl('201[0-9].*', df0$release_year),]
-```
 
-```{r , echo=FALSE,results="asis", header=FALSE, message=FALSE, warning=FALSE}
 RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
 df1 = subset[RQ1_relation]
 RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
 df2 = subset[RQ2_relation]
 ```
+
+- **Pre-processing**
+
+In order to generate the predictive probabilities, we shall split our data set into train set and test set. More specifically, the train set will consist of songs released in 2010-2017 and will be used to fit our model, while our test set will contain songs between 2018 and 2019. 
 
 ```{r}
 train <- df2[df2$release_year < 2018,]
@@ -107,42 +95,20 @@ test <- test[keeps]
 train <- train[keeps]
 ```
 
-```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
-r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
-test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
-test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
-Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
-ConfMat3 <- as.data.frame.matrix(Conf_mat3$table)
-Accuracy3 <- Conf_mat3$overall["Accuracy"]
-stargazer(ConfMat3, summary = FALSE, type = "text", title = "Confusion Matrix")
-stargazer(Accuracy3, type = "text", summary = FALSE)
-invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
-
-```
 
 
-```{r}
-library(car)
-a <- vif(r2) 
-stargazer(a, type = "text", summary = FALSE)
-```
 Second Research Question Portion
 
 # Abstract: 
 A few sentences describing the purpose of the analysis, the data, and key results
 
-
-TBW
-
+The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. Additionally, we shall treat the response variable as a factor (explicitness = 1, non-explicitness = 0). To accomplish this, we employed multiple logistic regression. The results show ... (tbw)
 
 
-#Introduction: Provide more background on the data and research questions. Be sure to cite the data
-and background information appropriately (APA style is fine)
-
+#Introduction: Provide more background on the data and research questions. Be sure to cite the data and background information appropriately (APA style is fine)
 
 
 TBW (Copy Paste with Citations)
-
 
 # Methods
 Describe the process you used to conduct analysis. This includes EDA and any relevant
@@ -150,7 +116,7 @@ data cleaning information (e.g., did you exclude missing values? If so, how many
 
 P.S. I noticed the results have to be moved to the results section. I'm just writing them together and splitting them later. 
 
-For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two values. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study (cite). 
+For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two categories. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study (cite). 
 
 The interpretations : 
 
@@ -182,10 +148,13 @@ stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header =
 
 In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
 
-VIF table
+```{r}
+library(car)
+a <- vif(r2) 
+stargazer(a, type = "text", summary = FALSE)
+```
 
-
-
+There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
 
 
 Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
@@ -195,12 +164,27 @@ Lorna's Explanation - Asking for verification
 Since our model is weak at identifying explicit songs, what does this mean for our study? Firstly, there was a smaller distribution of explicit songs; however, this pattern is indicative of music in the real world because the majority of songs are non-explicit. Secondly, more or better predictors may have been needed for this particular research question. Thirdly, is it critical for this model to predict these songs' explicitness accurately? No. Spotify likely employs the use of speech recognition (natural language processing) models to flag the explicitness of songs, not statistical methods. However, since the intent of the research question is predictive, these results do prove that our model is insufficient for predicting the explicitness of songs, but very successful when classifying the non-explicitness of songs.    
 
 
+ROC plot here, Table (with accuracy and AUC values for test)
 
-ROC plot here
+```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
+r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
+test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
+Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
+ConfMat3 <- as.data.frame.matrix(Conf_mat3$table)
+Accuracy3 <- Conf_mat3$overall["Accuracy"]
+stargazer(ConfMat3, summary = FALSE, type = "text", title = "Confusion Matrix")
+stargazer(Accuracy3, type = "text", summary = FALSE)
+invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
+
+```
 
 Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
 
-Table (with accuracy and AUC values for test)
+```{r, message = FALSE, fig.show="hold", out.width="50%"}
+conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matrix with label" )
+```
+
 
 
 
