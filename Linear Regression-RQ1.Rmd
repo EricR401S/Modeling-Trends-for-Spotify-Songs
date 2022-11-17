@@ -1,14 +1,9 @@
 ---
 title: "Multi Linear Regression-RQ1"
-output: html_document
+output: pdf_document
 date: "2022-11-11"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 #Load Libraries
@@ -18,55 +13,87 @@ library(corrplot)
 library(dplyr)
 library(table1)
 library(boot)
+library(MASS)
+library(equatiomatic)
+library(jtools)
+library(car)
+library(kableExtra)
 ```
 
-
-
 ```{r}
-
+#Load the data
 df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
 ```
 
+## Linear Regression Model
 
-
-
+Our initial model contained all the 7 predictors selected in the data section above was put through a backward AIC selection to come up with the most pertinent predictors of popularity.
 
 ```{r}
-library('MASS')
-
 linear1 <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+ tempo+ loudness+speechiness , data = df1)
-backward<- stepAIC(linear1, trace=TRUE, direction = 'backward')
-summary(backward)
+backward <- stepAIC(linear1, trace=FALSE, direction = 'backward')
+summ(backward, digits = 4)
 ```
+**Should we think of mean centering these variables?**
+
+A centering attempt.
 
 ```{r}
-plot(backward)
+#plot(backward)
+df1$acousticness_centered <- scale(df1$acousticness, scale = FALSE)
+df1$danceability_centered <- scale(df1$danceability, scale = FALSE)
+df1$energy_centered <- scale(df1$energy, scale = FALSE)
+df1$instrumentalness_centered <- scale(df1$instrumentalness, scale = FALSE)
+df1$tempo_centered <- scale(df1$tempo, scale = FALSE)
+df1$loudness_centered <- scale(df1$loudness, scale = FALSE)
+df1$speechiness_centered <- scale(df1$speechiness, scale = FALSE)
+
+scaled <- lm(popularity ~ acousticness_centered+danceability_centered+energy_centered+instrumentalness_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1)
+summ(scaled, digits = 4)
 ```
+```{r}
+confinterval_scaled <- confint(scaled, level = 0.95)
+kable(confinterval_scaled, caption =  "conf interval table for scaled model") %>% kable_styling(position="center",latex_options = c("hold_position"))
+```
+
+**Acousticness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average acoustiness for a song with a 39 popularity score is `r mean(df1$acousticness)`.We are 95% confident that (x1, x2) contains the true value for acoustiness and for every 1 *unit* increase in acoustiness of a song the average popularity score increases by approximately 1.8 holding all other factors constant.
+
+**Danceability** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average danceability for a song with a 39 popularity score is `r mean(df1$danceability)`.We are 95% confident that (x1, x2) contains the true value for danceability and for every 1 *unit* increase in danceability of a song the average popularity score increases by approximately 11.7 holding all other factors constant. 
+
+**Energy** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average energy for a song with a 39 popularity score is `r mean(df1$energy)`.We are 95% confident that (x1, x2) contains the true value for energy and for every 1 *unit* increase in energy of a song the average popularity score *increases by approximately 1.8 holding all other factors constant* 
+
+**Instrumentalness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average instrumentalness for a song with a 39 popularity score is `r mean(df1$instrumentalness)`.We are 95% confident that (x1, x2) contains the true value for instrumentalness and for every 1 *unit* increase in nstrumentalness of a song the average popularity score *increases by approximately 1.8 holding all other factors constant.* 
+
+**Tempo** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average tempo for a song with a 39 popularity score is `r mean(df1$tempo)`.We are 95% confident that (x1, x2) contains the true value for tempoand for every 1 *unit* increase in tempo of a song the average popularity score decreases by approximately 0.007 holding all other factors constant.
+
+**Loudness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average loudness for a song with a 39 popularity score is `r mean(df1$loudness)`.We are 95% confident that (x1, x2) contains the true value for loudness and for every 1 *unit* increase in loudness of a song the average popularity score increases by approximately 1 holding all other factors constant. 
+
+**Speechiness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average speechiness for a song with a 39 popularity score is `r mean(df1$speechiness`.We are 95% confident that (x1, x2) contains the true value for speechiness and for every 1 *unit* increase in speechiness of a song the average popularity score increases by approximately 6.4 holding all other factors constant.
+
 
 ```{r}
-confinterval <- confint(backward, level = 0.95)
-confinterval
+#plot(backward)
+#df$Duration_centered <- scale(df$Duration, scale = FALSE)
+equatiomatic::extract_eq(scaled, use_coefs = TRUE)
 ```
-
-## 1.d. Take On model Assumptions
-
-
-## 1.d. Interpretation of the regression model
+##Assumptions
 
 1. Linearity : Residual vs predictor graphh
 
-2. Normal distribution of residuals: Normal Q-Q CURVE 
+2. Normal distribution of residuals: Normal Q-Q CURVE : Parses
 
 3. Independence of error term: Residual vs fitted curve
 
 4. homoscedasticity:( Equal variance of error terms) The Scale-Location graphs shows whether residuals are spread equally along the ranges of predictors. It’s good we see a horizontal line with equally (randomly) spread points. 
 
 
+>Linearity: The residuals vs predictor plot 
+
 ```{r}
 #Assumptions of model 1
 #Linearity residuals vs duration
 library(olsrr)
-res <- resid(backward)
+res <- resid(scaled)
 plot(df1$acousticness,res)
 plot(df1$danceability,res)
 plot(df1$energy,res)
@@ -76,33 +103,60 @@ plot(df1$loudness,res)
 plot(df1$speechiness,res)
 abline(0,0)
 #Independence and equal variance of error terms
+ols_plot_resid_fit(scaled)
+
+```
+
+> Independence of error terms : The points on the residual vs fitted plot are randomly spread 
+
+```{r}
+#Independence and equal variance of error terms
 ols_plot_resid_fit(backward)
+```
+
+> Equal Variance of error terms : The points on the residual vs fitted plot are equally spread around the ab line(0,0) therefore we can conclude that there is homoscedasticity.
+
+```{r}
+#Independence and equal variance of error terms
+ols_plot_resid_fit(backward)
+```
+
+> Normality of residuals: The points on the quantile-quantile plot are clustered along the 45 degree line so there are no clear violations of this assumption.
+
+```{r}
+ols_plot_resid_hist(backward)
 #Normality of residuals
 ols_plot_resid_qq(backward)
 ```
 
+## Checking Multicollinearity
 
-
+The model appears to have no issues with multicollinearity as seen below all the VIPO values are below 5 therefore the potential multicollinearity between energy and acoustiness is not there. 
 ```{r}
-ols_plot_resid_hist(backward)
+multicol <- vif(linear1)
+kable(multicol, caption =  "VIF table") %>% kable_styling(position="center",latex_options = c("hold_position"))
+summ(backward)
 ```
 
-Outliers and Influential point - Cooks distance
+
+## Interpretation of Coeffcients
+
+```{r}
+confinterval <- confint(backward, level = 0.95)
+kable(confinterval, caption =  "conf interval table") %>% kable_styling(position="center",latex_options = c("hold_position"))
+```
+
+
+## Outliers and Influential point - Cooks distance
 ```{r}
 ols_plot_cooksd_bar(backward)
 ```
-
 
 ```{r}
 ols_plot_resid_lev(backward)
 ```
 
 ```{r}
-ols_plot_resid_lev(backward[])
+#ols_plot_resid_lev(backward[])
 ```
 
-
-
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
