@@ -25,6 +25,7 @@ library(pROC)
 library(e1071)
 library(stargazer)
 library(car)
+library(liver)
 ```
 
 ```{r subset, echo = FALSE, message=FALSE, results = FALSE}
@@ -156,6 +157,8 @@ stargazer(a, type = "text", summary = FALSE)
 
 There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
 
+# Results
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
 
 Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
 
@@ -185,20 +188,5 @@ Confusion Matrix table with labels (True Negatives, True Positives, we just need
 conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matrix with label" )
 ```
 
-
-
-
-# Results
-Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
-
-
-
-
-
-
 # Conclusion
 Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
-
-
-
-TBW
