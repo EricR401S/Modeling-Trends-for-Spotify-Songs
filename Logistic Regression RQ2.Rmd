@@ -80,6 +80,9 @@ subset <- df0[grepl('201[0-9].*', df0$release_year),]
 
 RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
 df1 = subset[RQ1_relation]
+df1$danceability <- df1$danceability * 100
+df1$speechiness <- df1$speechiness * 100
+df1$tempo <- df1$tempo  * 100
 RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
 df2 = subset[RQ2_relation]
 ```
@@ -127,9 +130,9 @@ In terms of interpreting the coefficients, holding all other variables constant,
 
 1. increase by 8.40 times for every unit increase in the danceability predictor.
 
-2. increase by 2.18 times for every unit increase in the energy predictor. 
+2. increase by 2.18 times for every thousandth unit increase in the energy predictor. 
 
-3. increase by 10,855 times for every unit increase in the speechiness predictor.
+3. increase by 10.855 (10,855) times for every thousandth unit increase in the speechiness predictor. 
 
 4. decrease by 0.94 times for every unit increase in the tempo predictor.
 
@@ -137,9 +140,6 @@ The results here have logical sense. What is most impressive is how danceability
 
 
 
-```{r}
-stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
-```
 
 ---------------------Might need a section here for the binned residuals------------------------------
 
@@ -181,6 +181,12 @@ stargazer(Accuracy3, type = "text", summary = FALSE)
 invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
 
 ```
+
+
+```{r}
+stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
+```
+
 
 Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
 
