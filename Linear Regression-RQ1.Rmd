@@ -58,11 +58,11 @@ kable(confinterval_scaled, caption =  "conf interval table for scaled model") %>
 
 **Acousticness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average acoustiness for a song with a 39 popularity score is `r mean(df1$acousticness)`.We are 95% confident that (x1, x2) contains the true value for acoustiness and for every 1 *unit* increase in acoustiness of a song the average popularity score increases by approximately 1.8 holding all other factors constant.
 
-**Danceability** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average danceability for a song with a 39 popularity score is `r mean(df1$danceability)`.We are 95% confident that (x1, x2) contains the true value for danceability and for every 1 *unit* increase in danceability of a song the average popularity score increases by approximately 11.7 holding all other factors constant. 
+**Danceability** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average danceability for a song with a 39 popularity score is `r mean(df1$danceability)`.We are 95% confident that (x1, x2) contains the true value for danceability and for every 0.1 *unit* increase in danceability of a song the average popularity score increases by approximately 11.7 holding all other factors constant. 
 
-**Energy** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average energy for a song with a 39 popularity score is `r mean(df1$energy)`.We are 95% confident that (x1, x2) contains the true value for energy and for every 1 *unit* increase in energy of a song the average popularity score *increases by approximately 1.8 holding all other factors constant* 
+**Energy** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average energy for a song with a 39 popularity score is `r mean(df1$energy)`.We are 95% confident that (x1, x2) contains the true value for energy and for every 0.001 *unit* increase in energy of a song the average popularity score *decreases by approximately 0.0196 holding all other factors constant* 
 
-**Instrumentalness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average instrumentalness for a song with a 39 popularity score is `r mean(df1$instrumentalness)`.We are 95% confident that (x1, x2) contains the true value for instrumentalness and for every 1 *unit* increase in nstrumentalness of a song the average popularity score *increases by approximately 1.8 holding all other factors constant.* 
+**Instrumentalness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average instrumentalness for a song with a 39 popularity score is `r mean(df1$instrumentalness)`.We are 95% confident that (x1, x2) contains the true value for instrumentalness and for every 0.001 *unit* increase in instrumentalness of a song the average popularity score *decreases by approximately 0.023 holding all other factors constant.* 
 
 **Tempo** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average tempo for a song with a 39 popularity score is `r mean(df1$tempo)`.We are 95% confident that (x1, x2) contains the true value for tempoand for every 1 *unit* increase in tempo of a song the average popularity score decreases by approximately 0.007 holding all other factors constant.
 
@@ -78,11 +78,14 @@ equatiomatic::extract_eq(scaled, use_coefs = TRUE)
 ```
 ##Assumptions
 
-1. Linearity : Residual vs predictor graphh
+1. Linearity : Residual vs predictor graph. 
 
 2. Normal distribution of residuals: Normal Q-Q CURVE : Parses
+In the Normal Q-Q curve we can see that the residuals are normally distributed. Apart frrom a few values, the Normal Q-Q curve shows the residuals are fairly normally distributed. Observations whose standardized residuals are greater than 3 in absoulte values seem like possible outliers.
 
-3. Independence of error term: Residual vs fitted curve
+
+3. Independence of error term: Residual vs fitted curve.
+
 
 4. homoscedasticity:( Equal variance of error terms) The Scale-Location graphs shows whether residuals are spread equally along the ranges of predictors. It’s good we see a horizontal line with equally (randomly) spread points. 
 
@@ -131,7 +134,7 @@ ols_plot_resid_qq(backward)
 
 ## Checking Multicollinearity
 
-The model appears to have no issues with multicollinearity as seen below all the VIPO values are below 5 therefore the potential multicollinearity between energy and acoustiness is not there. 
+The model appears to have no issues with multicollinearity as seen below all the VIF values are below 5 therefore the potential multicollinearity between energy and acoustiness is not there. 
 ```{r}
 multicol <- vif(linear1)
 kable(multicol, caption =  "VIF table") %>% kable_styling(position="center",latex_options = c("hold_position"))
@@ -155,6 +158,12 @@ ols_plot_cooksd_bar(backward)
 ```{r}
 ols_plot_resid_lev(backward)
 ```
+
+
+## Potential Limitations 
+
+## Conclusion 
+  
 
 ```{r}
 #ols_plot_resid_lev(backward[])
