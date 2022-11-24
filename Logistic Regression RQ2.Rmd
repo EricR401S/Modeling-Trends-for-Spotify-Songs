@@ -80,11 +80,12 @@ subset <- df0[grepl('201[0-9].*', df0$release_year),]
 
 RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
 df1 = subset[RQ1_relation]
-df1$danceability <- df1$danceability * 100
-df1$speechiness <- df1$speechiness * 100
-df1$tempo <- df1$tempo  * 100
+
 RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
 df2 = subset[RQ2_relation]
+df2$danceability <- df2$danceability * 100
+df2$speechiness <- df2$speechiness * 100
+df2$energy <- df2$energy  * 100
 ```
 
 - **Pre-processing**
@@ -118,9 +119,11 @@ TBW (Copy Paste with Citations)
 Describe the process you used to conduct analysis. This includes EDA and any relevant
 data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
 
-P.S. I noticed the results have to be moved to the results section. I'm just writing them together and splitting them later. 
-
 For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two categories. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study (cite). 
+
+# Results
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
+
 
 The interpretations : 
 
@@ -128,13 +131,13 @@ As discussed previously, a low P-value is a sign that our predictor variable has
 
 In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit...
 
-1. increase by 8.40 times for every unit increase in the danceability predictor.
+1. increase by 1.022 times for every percentage unit increase in the danceability predictor.
 
-2. increase by 2.18 times for every thousandth unit increase in the energy predictor. 
+2. increase by 1.006 times for every percentage unit increase in the energy predictor. 
 
-3. increase by 10.855 (10,855) times for every thousandth unit increase in the speechiness predictor. 
+3. increase by 1.09 times for every percentage unit increase in the speechiness predictor. 
 
-4. decrease by 0.94 times for every unit increase in the tempo predictor.
+4. decrease by 0.996 times for every unit increase in the tempo predictor.
 
 The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo's odds indicate that, as a song becomes slower, it will be less likely to have explicit lyrics. 
 
@@ -157,8 +160,6 @@ stargazer(a, type = "text", summary = FALSE)
 
 There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
 
-# Results
-Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
 
 Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
 
