@@ -13,7 +13,6 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 #Load Libraries
-library(ggplot2)
 library(psych)
 library(corrplot)
 library(dplyr)
@@ -148,6 +147,15 @@ The results here have logical sense. What is most impressive is how danceability
 
 
 ------------------------------------------/----------------------------------------------------------
+```{r}
+library(performance)
+binnedplot(fitted(r2), residuals(r2,"response"), xlab = "Predicted Probability")
+results <- binned_residuals(r2)
+as.data.frame(results) 
+if (require("see")){plot(results)}
+plot(results$xbar, results$ybar)
+which(results$ybar < -0.1)
+```
 
 
 In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
