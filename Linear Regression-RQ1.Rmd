@@ -122,22 +122,24 @@ ols_plot_resid_fit(scaled)
 
 ```{r}
 #Independence and equal variance of error terms
-ols_plot_resid_fit(backward)
+ols_plot_resid_fit(scaled)
 ```
 
 > Equal Variance of error terms : The points on the residual vs fitted plot are equally spread around the ab line(0,0) therefore we can conclude that there is homoscedasticity.
 
 ```{r}
 #Independence and equal variance of error terms
-ols_plot_resid_fit(backward)
+
+ols_plot_resid_fit(scaled)
 ```
 
 > Normality of residuals: The points on the quantile-quantile plot are clustered along the 45 degree line so there are no clear violations of this assumption.
 
 ```{r}
-ols_plot_resid_hist(backward)
+ols_plot_resid_hist(scaled)
 #Normality of residuals
-ols_plot_resid_qq(backward)
+ols_plot_resid_qq(scaled)
+
 ```
 
 ## Checking Multicollinearity
@@ -151,11 +153,14 @@ kable(test, caption =  "VIF table") %>% kable_styling(position="center",latex_op
 
 ## Outliers and Influential point - Cooks distance
 ```{r}
-ols_plot_cooksd_bar(backward)
+ols_plot_cooksd_bar(scaled)
+
 ```
 
+
 ```{r}
-ols_plot_resid_lev(backward)
+ols_plot_resid_lev(scaled)
+
 ```
 
 
@@ -171,9 +176,113 @@ ols_plot_resid_lev(backward)
 
 
 
+
+
 #Methods
-Describe the process you used to conduct analysis. This includes EDA and any relevant
+Describe the process you used to conduct analysis.
+
+This includes EDA and any relevant
 data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) 
 Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). 
 
 Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+cooksd <- cooks.distance(scaled)
+# Plot the Cook's Distance using the traditional 4/n criterion
+sample_size <- nrow(df1)
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4/sample_size, col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(cooksd),""), col="red")  # add labels
+# Removing Outliers
+# influential row numbers
+influential <- as.numeric(names(cooksd)[(cooksd > (4/sample_size))])
+df1_noinfluential <- df1[-influential, ]
+
+```
+
+
+```{r}
+model_noinfluential <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1_noinfluential)
+summ(model_noinfluential, digits = 7)
+
+```
+
+
+```{r}
+#backward
+backward_noinfluential <- stepAIC(model_noinfluential, trace=FALSE, direction = 'backward')
+summ(backward_noinfluential, digits = 7)
+
+```
+
+We calculate the Cook’s Distance to observe how much influence an observation has on the model.It is a score that tells you how much the coefficients were changed if the observation at hand were removed. Higher means more influence. It uses the leverage and the residuals to calculate the score. All points having distance above 4/N, where N is the sample size, are influential points which have been excluded from the data points. This often leads to a very small cutoff if you have a large sample.
+We can see that the dataset we obtain after removing the influential points has 9838 observations. 
+After removing the influential points we can see that the model fit is better, with increased R^2 value of around 0.3059. We can also see that on removing high  influence pooints,  the coefficients of the predictors have changed. On analysis of the p-values for the coefficients, we can see that the *tempo* has become insignificant. 
+
+```{r}
+#Assumptions of final model
+#Linearity residuals vs duration
+library(olsrr)
+res <- resid(model_noinfluential)
+plot(df1_noinfluential$acousticness,res)
+plot(df1_noinfluential$danceability,res)
+plot(df1_noinfluential$energy,res)
+plot(df1_noinfluential$instrumentalness,res)
+plot(df1_noinfluential$tempo,res)
+plot(df1_noinfluential$loudness,res)
+plot(df1_noinfluential$speechiness,res)
+abline(0,0)
+#Independence and equal variance of error terms
+ols_plot_resid_fit(model_noinfluential)
+```
+
+
+
+```{r}
+ols_plot_resid_lev(model_noinfluential)
+ols_plot_cooksd_bar(model_noinfluential)
+ols_plot_resid_hist(model_noinfluential)
+
+```
+
+```{r}
+#Normality of residuals
+ols_plot_resid_qq(model_noinfluential)
+ols_plot_resid_fit(model_noinfluential)
+```
+```{r}
+
+```
+
+
