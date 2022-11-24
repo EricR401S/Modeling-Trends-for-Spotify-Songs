@@ -11,8 +11,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Abstract: 
 A few sentences describing the purpose of the analysis, the data, and key results
 
+Oftentimes, we listen to songs and wonder about the characteristics that define them, causing them to become salient in our consciousness. In all forms of media, music is ever present, especially the songs found in popular culture. For this study, we used a subset of a [Spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks), one of the most efficient gauges of music consumption(CITE). This dataset has an assortment of descriptors that can help us understand about the songs being played worldwide, such as tempo, energy and danceability metrics, amongst many others. In our specific study, we decided to focus on the songs from the 10s decade (2010-2019).
+
+We had two main research questions for this study. The first research question aimed to identify which musical characteristics are most important in determining a song's popularity, and the second research question is if we could predict whether a song is explicit or not based on a set of predictors. 
+
+Results
+//////
+
 ## Introduction: Provide more background on the data and research questions. Be sure to cite the data
 and background information appropriately (APA style is fine)
+
+--at this point - we talked about the data's structure and the full detail of the RQ + theory + (Justification for the variables)
+
 
 ##  Methods
 Describe the process you used to conduct analysis. This includes EDA and any relevant
@@ -21,8 +31,64 @@ Then describe the models you fit, and any changes you made to improve model fit 
 
 Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
 
+
+Data
+
+Insights from  EDA and any relevant data cleaning information 
+ (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?)
+ 
+ The dataset, in its original state, needed to undergo various modifications for it to become malleable, indicating many steps to clean its contents. The artist name column had brackets in the cell, such as "[Beethoven]", so they were removed. The duration, originally in milliseconds, was converted to minutes. We also created a column for release year by extracting the value from the release date, which helped subset the data. As for speechiness and tempo metrics, they were important indicators because speechiness values below 0.66 are speech tracks such as podcasts and poetries, and tracks with a tempo of 0 were comprised of real songs with missing tempo values or tracks of rain sounds and white noise. After these cleaning processes were completed, our final subset was comprisef of a total of 104,767 records.
+ 
+ Model
+Model Selection and justification
+
+
+
+
+Model Assessment
+Improvements to Model and overall Model Assessment
+(e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). 
+
+
+
+
+
+
+
+Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
+
+
+
+
+
+
+
+
+
+
 ## Results
-Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.\
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
+
+Main Insights
+Key EDA results, descriptive statistics (table1)
+
+
+
+Model Results
+
+
+- Key plot for each RQ
+
+
+Address Assessment
+
+
 
 ## Conclusion
 Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
+
+Key Insights
+Limitations
+Recommendations/Future Studies
+
+
