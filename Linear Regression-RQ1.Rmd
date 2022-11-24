@@ -285,4 +285,24 @@ ols_plot_resid_fit(model_noinfluential)
 
 ```
 
+- **Pre-processing**
+To begin building the model, we shall examine the relationships between each musical attribute and popularity using scatter plots and correlation matrices to see if there is a linear relationship between each attribute and popularity. Then, we shall look into the relationships between the musical attributes themselves, keeping an eye out for any potential sources of multicollinearity.
+
+### Model
+
+For the first research question we used multiple linear regression to gauge how different song attributes affect popularity of songs in the 2010 decade. This was done by regressing the response variable popularity on to the predictor ......, with ....number of tracks.The predictors were mean centered to improve the interpretability of the model results with an increase in any predictor causing a change to the average popularity of a song. Because of the ranges of the predictors energy, danceability and instrumatelness were scaled. The seven predictors were put through a backward selection process with AIC to determine the best indicators of popularity. We choose, AIC as it imposes a lower penalty for having multiple independent variables and were seeking to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC was selected and fitted.
+
+### Model Assesment
+
+The model was checked for the assumptions of linearity, equal variance and independence of error terms, and normality of residuals. Using cooks distance we determined and removed influential points and a model was refitted.A Variance Inflation Factor (VIF) was run to investigate multicollinearity in the model. The model coefficients, p values, t values and confidence intervals were determined.
+
+Results
+
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.\
+
+In Figure 1, we observe that more popular songs have a higher average danceability than less popular songs.
+In Figure 2, we observe that, as songs become more popular, the energy remains evenly distributed, but the instrumentalness is reduced with the exception of a few outliers, although the relationship between the two variables becomes insignificant.
+For Figure 3, the relationship between tempo and loudness reveals a very specific recipe for the most popular songs. This group's tempo lies between 50-200 BPM (beats per minute) and -20 to 0 db, while other groups' tempo and loudness profiles remain spread out across the axes of tempo and loudness. Similarly, for Figure 4, although the speechiness values remain evenly distributed, the most popular songs exhibit a massive reduction in values in instrumentation.
+
+Overall, the insights show that there seems to be an assortment of musical attributes that define an extremely popular song, yet they seem to be less pronounced for the less popular groups of songs. In other words, the most popular song profiles demonstrate an absence of instrumentalness and a specific range of tempo and loudness values.
 
