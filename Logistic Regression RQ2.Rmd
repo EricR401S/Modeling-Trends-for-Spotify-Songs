@@ -100,7 +100,6 @@ train <- train[keeps]
 ```
 
 
-
 Second Research Question Portion
 
 # Abstract: 
@@ -139,23 +138,6 @@ In terms of interpreting the coefficients, holding all other variables constant,
 4. decrease by 0.996 times for every unit increase in the tempo predictor.
 
 The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo's odds indicate that, as a song becomes slower, it will be less likely to have explicit lyrics. 
-
-
-
-
----------------------Might need a section here for the binned residuals------------------------------
-
-
-------------------------------------------/----------------------------------------------------------
-```{r}
-library(performance)
-binnedplot(fitted(r2), residuals(r2,"response"), xlab = "Predicted Probability")
-results <- binned_residuals(r2)
-as.data.frame(results) 
-if (require("see")){plot(results)}
-plot(results$xbar, results$ybar)
-which(results$ybar < -0.1)
-```
 
 
 In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
@@ -205,3 +187,18 @@ conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matri
 
 # Conclusion
 Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
+
+#Appendix
+## Binned Residual Plot
+
+```{r}
+library(performance)
+binnedplot(fitted(r2), residuals(r2,"response"), xlab = "Predicted Probability")
+results <- binned_residuals(r2)
+as.data.frame(results) 
+if (require("see")){plot(results)}
+plot(results$xbar, results$ybar)
+which(results$ybar < -0.1)
+```
+Overall, the binned residual plot shows that we have a good fit. However, we indeed need to be cautious about a few of outliers.From the residual binned plot, we can see that there are 5 outliers having residual larger than 0.1 difference from what was expected. Given that our sample size is huge enough, so we would not do further actions on these 5 outliers.
+
