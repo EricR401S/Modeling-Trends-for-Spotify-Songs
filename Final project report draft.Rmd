@@ -1,5 +1,5 @@
 ---
-title: "Final Report Draft"
+title: "EXPLORING POPULARITY AND EXPLICITY OF 2010s MUSIC THROUGH MUSICALITY."
 author: "Eric Rios, Emma Wang, Pragya Raghuvanshi, Lorna Aine"
 date: "`r Sys.Date()`"
 output: pdf_document
@@ -7,88 +7,497 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#Load Libraries
+library(psych)
+library(ggplot2)
+library(corrplot)
+library(dplyr)
+library(table1)
+library(boot)
+library(caret)
+library(arm)
+library(pROC)
+library(e1071)
+library(stargazer)
+library(car)
+library(liver)
+library(jtools)
+library(olsrr)
+library(kableExtra)
 ```
-## Abstract: 
-A few sentences describing the purpose of the analysis, the data, and key results
 
-Oftentimes, we listen to songs and wonder about the characteristics that define them, causing them to become salient in our consciousness. In all forms of media, music is ever present, especially the songs found in popular culture. For this study, we used a subset of a [Spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks), one of the most efficient gauges of music consumption(CITE). This dataset has an assortment of descriptors that can help us understand about the songs being played worldwide, such as tempo, energy and danceability metrics, amongst many others. In our specific study, we decided to focus on the songs from the 10s decade (2010-2019).
+```{r subset, echo = FALSE, message=FALSE, results = FALSE}
+#read original data set
+df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
+```
 
-We had two main research questions for this study. The first research question aimed to identify which musical characteristics are most important in determining a song's popularity, and the second research question is if we could predict whether a song is explicit or not based on a set of predictors. 
+```{r datacleaning, echo = FALSE, message=FALSE, results = FALSE }
 
-Results
-//////
+# Confirming the data types of the columns
+sapply(df, class)
 
-## Introduction: Provide more background on the data and research questions. Be sure to cite the data
-and background information appropriately (APA style is fine)
+# Removing the brackets from the names of the artists
+df$artists<-gsub("]","",as.character(df$artists))
+df$artists<-gsub("^.","",as.character(df$artists))
 
---at this point - we talked about the data's structure and the full detail of the RQ + theory + (Justification for the variables)
+# New minute variable for our own use to simplify interpretation
+df$duration_minutes <- df$duration_ms/(1000*60)
 
+# Confirming that there are no missing data, except the artist name column
+colSums(is.na(df))
+
+# change "explicit" into binary factor
+df$explicit_fac <- factor(df$explicit,
+                         levels=c(0,1),
+                         labels=c('Non-Explicit','Explicit'))
+
+# make Date readable to R
+df$release_year <- substr(df$release_date, 1, 4)
+df$release_year <- as.integer(df$release_year)
+
+# According to variable definitions, speechiness levels above 0.66 are speech tracks such as podcasts and poetries.
+df0 <- df[df$speechiness <= 0.66,]
+nrow(df) - nrow(df0) #22,598 records of speech tracks
+
+# Examining records with a value of 0 for tempo
+# A total of 328 records with 0 tempo were found, and most were tracks of rain sounds and introductions.
+sum(df0$tempo==0)
+
+# 148 of those records are from the 2010s decade, our area of interest. 
+tempo_0_subset <- df0[df0$tempo == 0,]
+tempo_0_subset_2010s <- tempo_0_subset[grep('201[0-9].*', tempo_0_subset$release_date),]
+nrow(tempo_0_subset_2010s)
+
+# Removing records with a value of 0 for tempo
+df0 <- df0[df0$tempo != 0,]
+```
+
+```{r , echo=FALSE,results="asis", header=FALSE, message=FALSE, warning=FALSE}
+#subset data
+subset <- df0[grepl('201[0-9].*', df0$release_year),]
+
+RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
+df1 = subset[RQ1_relation]
+
+RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
+df2 = subset[RQ2_relation]
+df2$danceability <- df2$danceability * 100
+df2$speechiness <- df2$speechiness * 100
+df2$energy <- df2$energy  * 100
+```
+
+## Abstract
+*A few sentences describing the purpose of the analysis, the data, and key results*
+The rise of music streaming, algorithms and the ubiquity of ear buds and headphones in the 2010s decade forever changed they way we consume music. Beyond the feelings it invokes in us, music is a combination of different qualities that often cannot be easily isolated by the human ear. With the advent of technology, musical innovation changed the way artists and producers record different aspects of music which in turn changed they way consumers ......
+For this study, we subset a [Spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks),with an assortment of descriptors focusing on the 2010 decade to investigate which qualities have been key to making songs popular and if they can be used to tell apart explicit and non explicit music, a phenomenal that has been on the rise in the decade. We found that x, y,z play a key role in determining the average popularity index of a song and x, y,z can potentially be used to predict of  a song is explicit or not.  
+
+## Introduction
+
+The data set used in this research contained `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019 obtained from a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. These variables are various music attributes defined below which were sourced from Spotify's API documentation.
+
+<ul>
+-**Popularity** is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1 (Spotify, 2022).
+
+-**Explicitness** is whether a song contains inappropriate words such as curse words and sexually explicit content that are unacceptable to play in some public settings. 1 is the value identifying a song as explicit, while 0 implies that a song is non-explicit. This is the dependent variable for the second research question (Spotify, 2022).
+
+-**Acousticness** is a confidence measure from 0.0 to 1.0 of how much of the track is composed with acoustic instruments. 1.0 represents high confidence that the track is acoustic (Spotify, 2022).
+
+-**Danceability** is a rating of a track's suitability for dancing. This metric is based on a combination of musical elements including tempo, rhythm stability, beat strength, and overall regularity. A value of 0.0 is least danceable and 1.0 is most danceable (Spotify, 2022).
+
+-**Energy** is a perceptual measure of intensity and activity. Energetic tracks typically feel fast, loud, and noisy (Spotify, 2022).
+
+-**Instrumentalness** pertains to whether a track contains no vocals. "Ooh" and "aah" sounds are treated as instrumentals in this context, while Rap or spoken word tracks are considered "vocal". If the instrumentalness values is greater than or equal to 0.5, the track is very likely to have no vocal content (Spotify, 2022).
+
+-**Tempo** refers to the overall estimated tempo of a track in beats per minute (BPM). In musical terminology, tempo is the speed or pace of a given piece, which derives directly from the average beat duration (Spotify, 2022).
+
+-**Loudness** measures the overall loudness of a track in decibels (dB). Loudness values are averaged across the entire track and are useful for comparing relative loudness of tracks. Loudness is the quality of a sound that is the primary psychological association of physical strength (amplitude). The values typically range between -60 and 0 db (Spotify, 2022).
+
+-**Speechiness** detects the presence of spoken words in a track. The more speech-like the recording (e.g. talk show, audio book, poetry), the closer to 1.0 the attributed value. Values above 0.66 describe tracks that are probably made entirely of spoken words. Values between 0.33 and 0.66 describe tracks that may contain both music and speech, either in sections or layered, including such cases as rap music. Values below 0.33 most likely represent music and other non-speech-like tracks (Spotify, 2022).
+
+<ul>
+
+**Relationship of interest**
+With this research we were interested in 
+<ul>
+-What are the musical attributes that gauged the popularity of songs in the 2010s? 
+*Dependent Variable (continuous) = popularity;*
+*Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness* 
+
+-To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? 
+*Dependent Variable (categorical) = Explicitness;*
+*Independent Variables = danceability, energy, speechiness, and tempo* 
+<ul>
+
+**Justification for Variable Selection**
+
+First and foremost, we chose the variables for our research questions based on prior, domain knowledge of music. For the first research question, which concerns the features that popularized songs during the 2010s, a series of aforementioned predictors were chosen. What will follow is the justification for this "a priori" selection for both research questions.
+
+Choosing the specific predictors to predict song popularity is due to the weight of their importance for the research question 1. Popular songs, whether they are an emotional ballad or a dance track, all have certain features to keep the listeners engaged and interested to repeat listening to these tracks (Leviatan, 2017). The tempo, energy and loudness indicate the pacing and sonic impact and pleasantness of the track. The speechiness, danceability and instrumentation (which also includes acoustic choices or "acousticness") dictate melody choices, chord progressions, instrument choices, wordings, vocal lines and more types sonic layers. However, the latter is very nuanced because it pertains to the genre choice of the producers. There are very popular songs with high instrumentation, no words and low danceability, such as songs from classical music. On the other hand, Pop and Rock songs vary their levels of instrumentation and acousticness and speechiness. Lastly, if the song is aimed towards a festive audience, such as a club song, then prioritizing danceability governs the levels of instrumentation and speechiness and lack of acousticness, and this prioritization varies by genre (Androids, 2017). In conclusion, the interplay of these factors influences the popularity of songs by making them memorable and enticing. 
+
+As for the second research question, the explicitness of tracks is strongly swayed by other factors. A very logical approach to predicting explicitness was first looking at the high levels of speechiness in songs. For example, rap songs rank high in this metric because the verses are composed of a spoken word format over a series of 8 or 16 bars, and each bar is a rap line (Edwords), while singing doesn't have to adhere to the "1 bar = 1 line" rule; thus, speechiness became the metric of most importance. In addition, songs in this genre tend to include explicit content, often sexual, in the lyrics (Tayag, 2017). Second to this metric, the other predictors of danceability, energy and tempo were considered as helpful in predicting explicitness. The energy and danceability of the song collude with speechiness to infer if a track could have explicit language. For example, a song with low energy and low danceability may or may not be less likely to have explicit language than a song with high energy and danceability, holding the speechiness level constant, and this is a relationship we wish to investigate as well. As for tempo, music genres that are known to include explicit language follow specific tempos. For instance, Trap songs usually have a tempo of 140 bpm (Burchell, 2019).
 
 ##  Methods
+
+### Data
+
 Describe the process you used to conduct analysis. This includes EDA and any relevant
 data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) 
 Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). 
+The dataset, in its original state, needed to undergo various modifications for it to become malleable, indicating many steps to clean its contents. The artist name column had brackets in the cell, such as "[Beethoven]", so they were removed. The duration, originally in milliseconds, was converted to minutes. We also created a column for release year by extracting the value from the release date, which helped subset the data. As for speechiness and tempo metrics, they were important indicators because speechiness values below 0.66 are speech tracks such as podcasts and poetries, and tracks with a tempo of 0 were comprised of real songs with missing tempo values or tracks of rain sounds and white noise. After these cleaning processes were completed, our final subset was comprise of a total of 104,767 records.
 
-Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
+### Models
 
+For the first research question we used multiple linear regression to gauge how different song attributes affect popularity of songs in the 2010 decade. This was done by regressing the response variable popularity on to the predictor ......, with ....number of tracks.The predictors were mean centered to improve the interpretability of the model results with an increase in any predictor causing a change to the average popularity of a song. Because of the ranges of the predictors energy, danceability and instrumatelness were scaled. The seven predictors were put through a backward selection process with AIC to determine the best indicators of popularity. We choose, AIC as it imposes a lower penalty for having multiple independent variables and were seeking to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC was selected and fitted.
+For the second question, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose. In this case, a song is either explicit or non-explicit, two categories. The second step was to divide our data into `train set` and `test set`, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, checking potential multicollinearity by VIF scores, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds ratio that our song may be explicit as compared to inexplicit. For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study.
 
-Data
+###  Model Assessment
 
-Insights from  EDA and any relevant data cleaning information 
- (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?)
- 
- The dataset, in its original state, needed to undergo various modifications for it to become malleable, indicating many steps to clean its contents. The artist name column had brackets in the cell, such as "[Beethoven]", so they were removed. The duration, originally in milliseconds, was converted to minutes. We also created a column for release year by extracting the value from the release date, which helped subset the data. As for speechiness and tempo metrics, they were important indicators because speechiness values below 0.66 are speech tracks such as podcasts and poetries, and tracks with a tempo of 0 were comprised of real songs with missing tempo values or tracks of rain sounds and white noise. After these cleaning processes were completed, our final subset was comprisef of a total of 104,767 records.
- 
- Model
-Model Selection and justification
+The model was checked for the assumptions of linearity, equal variance and independence of error terms, and normality of residuals. Using cooks distance we determined and removed influential points and a model was refitted.A Variance Inflation Factor (VIF) was run to investigate multicollinearity in the model. The model coefficients, p values, t values and confidence intervals were determined.
 
-
-
-
-Model Assessment
-Improvements to Model and overall Model Assessment
-(e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). 
-
-
-
-
-
-
-
-Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
-
-
-
-
-
-
-
-
-
-
+*model Assesment for q2*
 ## Results
-Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
 
-Main Insights
-Key EDA results, descriptive statistics (table1)
+### EDA Results
+To fully understand the data with which we are working, we will explore the basic statistics of the variables of interest. 
+
+```{r , echo=FALSE,results="asis", header=FALSE, message=FALSE, warning=FALSE }
+
+table1(~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness+popularity| explicit_fac, data=subset, flip_data=TRUE, overall = "total")
+```
+From the table above, we can observe the mean, median, standard deviation, minimum and maximum values of variables categorized by explicit and non explicit. While mean values of acousticness, instrumentalness, tempo are higher for non explicit songs, values for energy, danceability, loudness and speechiness are higher for explicit songs. In addition, we can also infer that popularity of explicit songs is minutely higher than non explicit songs. As for standard deviation, high values for tempo and popularity indicate that the data points are spread out in relation to the mean value, whereas low values for danceability, energy, speechiness indicate that the data points are clustered around the mean. Lastly, nearly equal values of median and mean for danceability, energy and tempo indicate that the data points are more or less evenly distributed.
+
+One way to ascertain the weight of association amongst predictors is to create a correlation matrix (See Appendix), where each variable's relationship to one another is quantified. Based on the results, except one case, the variables are weakly correlated with each other. On the other hand, the one exception was acousticness and energy, which had a fairly strong correlation that we will consider cautiously when we approach the modeling phase. 
+
+```{r , echo=FALSE,results="asis", header=FALSE, message=FALSE, warning=FALSE}
+RQ1_relation <- c("popularity", "acousticness", "danceability", "energy", "instrumentalness", "tempo", "loudness", "speechiness")
+df1 = subset[RQ1_relation]
+RQ2_relation <- c("explicit_fac", "danceability", "energy", "speechiness","tempo")
+df2 = subset[RQ2_relation]
+```
+
+**Exploratory Analysis for Research Question 1**
+
+To better understand the data set, the popularity variable was binned into 5 groups ranging from least popular to more popular across group 1 to group 5 (See Appendix : Table of Popularity Grouping).
+
+```{r, echo = FALSE, message=FALSE, results = FALSE }
+#create datasets for EDA
+#5 pop grpups across the data for better grouping
+edadf1<- df1%>%mutate(popularity_fac= case_when(popularity <= 20 ~ "pop group 1",
+                                                popularity <= 40 ~ "pop group 2",
+                                                popularity <= 60~ "pop group 3",
+                                                popularity <= 80~ "pop group 4",
+                                                popularity <= 100 ~ "pop group 5"))
+
+#eda dataset for 2: includes release year
+q2 <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
+edadf2 = subset[q2]
+
+```
+
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
+#Relationship between danceability and popularity
+ggplot(edadf1) +
+  aes(x = "", y = danceability, colour = popularity_fac) +
+  geom_boxplot(fill = "#112446") +
+  scale_color_hue(direction = 1) +
+  labs(
+    x = "Popularity",
+    y = "Danceability",
+    title = "Relationship between danceability and popularity",
+    color = "Popularity Groups",
+    caption = "Fig 1"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#Relationship between Instrumentalness and energy along the popularity scale
+ggplot(edadf1) +
+  aes(x = instrumentalness, y = energy) +
+  geom_point(shape = "circle", size = 1.5, colour = "#F8766D") +
+  labs(
+    x = "Instrumentalness",
+    y = "Energy",
+    title = "Instrumentalness and Energy along the popularity scale",
+    caption = "Fig 2"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+```
+
+In Figure 1, we observe that more popular songs have a higher average danceability than less popular songs. 
+In Figure 2, we observe that, as songs become more popular, the energy remains evenly distributed, but the instrumentalness is reduced with the exception of a few outliers, although the relationship between the two variables becomes insignificant.
+
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
+#Relationship between loudness and tempo along the popularity scale
+ggplot(edadf1) +
+  aes(x = loudness, y = tempo) +
+  geom_point(shape = "circle", size = 1.5, colour = "#00BA38") +
+  labs(
+    x = "loudness",
+    y = "tempo",
+    title = "Loudness and Tempo along the popularity scale",
+    caption = "Fig 3"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+
+#Relationship between speechiness and instrumentalness along the popularity scale
+ggplot(edadf1) +
+  aes(x = speechiness, y = instrumentalness) +
+  geom_point(shape = "circle", size = 1.5, colour = "#619CFF") +
+  labs(
+    x = "speechiness",
+    y = "instrumentalness",
+    title = "Speechiness and Instrumentalness along the popularity scale",
+    caption = "Fig 4"
+  )+
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5)) +
+  facet_wrap(vars(popularity_fac))
+
+```
+
+For Figure 3, the relationship between tempo and loudness reveals a very specific recipe for the most popular songs. This group's tempo lies between 50-200 BPM (beats per minute) and -20 to 0 db, while other groups' tempo and loudness profiles remain spread out across the axes of tempo and loudness. Similarly, for Figure 4, although the speechiness values remain evenly distributed, the most popular songs exhibit a massive reduction in values in instrumentation.
+
+Overall, the insights show that there seems to be an assortment of musical attributes that define an extremely popular song, yet they seem to be less pronounced for the less popular groups of songs. In other words, the most popular song profiles demonstrate an absence of instrumentalness and a specific range of tempo and loudness values.
+
+**Exploratory Data Analysis for Research Question 2**
+
+For Figure 5, it is clear that the explicit content in music has risen over the past decade. As for Figure 6, the energy in explicit songs is centered around a mean of 0.680, while the non explicit songs are skewed to a higher energy metric. In terms of Figure 7, the danceability of songs are centered around the mean of 0.687 for explicit songs and 0.599 for non-explicit songs. As for Figure 8, on average, explicit songs are less speechy than non-explicit songs. In conclusion, the chosen variables would give us a great classification of explicit and non explicit songs moving forward. 
+
+```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
+#explicity over the years
+ggplot(edadf2) +
+  aes(x = release_year, colour = explicit_fac) +
+  geom_density(adjust = 1L, fill = "#112446") +
+  scale_color_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Explicit and non explicit content in music over the years",
+    x = "Release year",
+    y = "Density of explicit content in music ",
+    caption = "Fig 5"
+  )+
+  scale_x_continuous(breaks=seq(2010,2019,1))+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#energy in explicit music
+ggplot(edadf2) +
+  aes(x = energy, colour = explicit_fac) +
+  geom_histogram(bins = 30L, fill = "#112446") +
+  scale_color_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Energy in explicit and non explicit songs",
+    caption = "Fig 6")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#danceability in explicit music
+ggplot(edadf2) +
+  aes(x = danceability, fill = explicit_fac) +
+  geom_histogram(bins = 30L) +
+  scale_fill_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  labs(
+    title = "Danceability in explicit and non explicit songs",
+    caption = "Fig 7")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+#speechiness in explicitt music
+ggplot(edadf2) +
+  aes(x = "", y = speechiness, fill = explicit_fac) +
+  geom_boxplot() +
+  scale_fill_manual(
+    values = c(`Non-Explicit` = "#440154",
+    Explicit = "#FDE725")
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Speechiness in explicit and non explicit songs",
+    
+    caption = "Fig 8")+
+  theme_minimal()+
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+
+```
+### Model Results
+
+*Model 1*
+
+```{r}
+#Load the data
+df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
+```
+
+## Linear Regression Model
+
+Our initial model contained all the 7 predictors selected in the data section above was put through a backward AIC selection to come up with the most pertinent predictors of popularity.
+
+```{r}
+linear1 <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+ tempo+ loudness+speechiness , data = df1)
+backward <- stepAIC(linear1, trace=FALSE, direction = 'backward')
+summ(backward, digits = 4)
+```
+
+```{r}
+#plot(backward)
+
+#divide first
+df1$danceability0.1 <- (df1$danceability)*10
+df1$energy0.001 <- (df1$energy)*1000
+df1$instrumentalnes0.001 <- (df1$instrumentalness)*1000
 
 
+#centered
+df1$acousticness_centered <- scale(df1$acousticness, scale = FALSE)
+df1$danceability0.1_centered <- scale(df1$danceability0.1, scale = FALSE)
+df1$energy0.001_centered <- scale(df1$energy0.001, scale = FALSE)
+df1$instrumentalness0.001_centered <- scale(df1$instrumentalnes0.001, scale = FALSE)
+df1$tempo_centered <- scale(df1$tempo, scale = FALSE)
+df1$loudness_centered <- scale(df1$loudness, scale = FALSE)
+df1$speechiness_centered <- scale(df1$speechiness, scale = FALSE)
 
-Model Results
+scaled <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1)
+summ(scaled, digits = 7)
+```
+```{r}
+confinterval_scaled <- confint(scaled, level = 0.95)
+kable(confinterval_scaled, caption =  "conf interval table for scaled model") %>% kable_styling(position="center",latex_options = c("hold_position"))
+```
+
+```{r}
+cooksd <- cooks.distance(scaled)
+# Plot the Cook's Distance using the traditional 4/n criterion
+sample_size <- nrow(df1)
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4/sample_size, col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(cooksd),""), col="red")  # add labels
+# Removing Outliers
+# influential row numbers
+influential <- as.numeric(names(cooksd)[(cooksd > (4/sample_size))])
+df1_noinfluential <- df1[-influential, ]
+```
 
 
-- Key plot for each RQ
+```{r}
+model_noinfluential <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1_noinfluential)
+summ(model_noinfluential, digits = 7)
+
+```
 
 
-Address Assessment
+```{r}
+#backward
+backward_noinfluential <- stepAIC(model_noinfluential, trace=FALSE, direction = 'backward')
+summ(backward_noinfluential, digits = 7)
 
+```
+
+**Acousticness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average acoustiness for a song with a 39 popularity score is `r mean(df1$acousticness)`.We are 95% confident that (x1, x2) contains the true value for acoustiness and for every 1 *unit* increase in acoustiness of a song the average popularity score increases by approximately 1.8 holding all other factors constant.
+
+**Danceability** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average danceability for a song with a 39 popularity score is `r mean(df1$danceability)`.We are 95% confident that (x1, x2) contains the true value for danceability and for every 0.1 *unit* increase in danceability of a song the average popularity score increases by approximately 11.7 holding all other factors constant. 
+
+**Energy** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average energy for a song with a 39 popularity score is `r mean(df1$energy)`.We are 95% confident that (x1, x2) contains the true value for energy and for every 0.001 *unit* increase in energy of a song the average popularity score *decreases by approximately 0.0196 holding all other factors constant* 
+
+**Instrumentalness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average instrumentalness for a song with a 39 popularity score is `r mean(df1$instrumentalness)`.We are 95% confident that (x1, x2) contains the true value for instrumentalness and for every 0.001 *unit* increase in instrumentalness of a song the average popularity score *decreases by approximately 0.023 holding all other factors constant.* 
+
+**Tempo** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average tempo for a song with a 39 popularity score is `r mean(df1$tempo)`.We are 95% confident that (x1, x2) contains the true value for tempoand for every 1 *unit* increase in tempo of a song the average popularity score decreases by approximately 0.007 holding all other factors constant.
+
+**Loudness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average loudness for a song with a 39 popularity score is `r mean(df1$loudness)`.We are 95% confident that (x1, x2) contains the true value for loudness and for every 1 *unit* increase in loudness of a song the average popularity score increases by approximately 1 holding all other factors constant. 
+
+**Speechiness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average speechiness for a song with a 39 popularity score is `r mean(df1$speechiness)`.We are 95% confident that (x1, x2) contains the true value for speechiness and for every 1 *unit* increase in speechiness of a song the average popularity score increases by approximately 6.4 holding all other factors constant.
+
+*Model 2*
+```{r}
+r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
+
+```
+
+```{r}
+ggplot( train, aes(x = explicit_fac, y= danceability, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 1. Danceability and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= speechiness, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 2. Speechiness and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= tempo, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Tempo and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= energy, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Energy and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+```
+As discussed previously, a low P-value is a sign that our predictor variable has an association with our outcome variable. Shown in our table below, our model's predictors are all statistically significant in predicitng a song's explicitness. From the bar graphs above, we can see that only tempo has a slightly negative effect on explicitness (on averge, the more speedy, the less explicit), while the speechiness, dancebility, and tempo are postively related to explicitness. More specifically, we can see speechiness and dancebility have stronger relationshipe to explicitness as compared to tempo and energy.
+
+In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit compared to being non-explicit is 1.022 times for every percentage unit increase in the danceability; 1.006 times for every percentage unit increase in the energy predictor; 1.09 times for every percentage unit increase in the speechiness; 0.996 times for every unit increase in the tempo.
+
+Even though every predictor in the analysis has been proved to be statistically significant, showing the evident association between the predictors and the explicitness, when we look at the size of odds ratio, it is however not that impactful. This makes sense given that a music is consist of many elements and only enhancing one aspect should not have a huge effect on explicitness. For instance, if danceability increases by 10%, it will only make the odds of being explicit increase 6% (1.006**10 = 1.06). In other words, very danceable records are more likely have extplicit lyrics, while the impact isn't strong. Energy also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Out of expectation, tempo's odds ratio indicates that, as a song becomes slower, it will be more likely to be inexplicit lyrics. 
+
+# Multicolliearity
+
+In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
+
+```{r}
+library(car)
+a <- vif(r2) 
+stargazer(a, type = "text", summary = FALSE)
+```
+
+There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
+
+# Prediction and Accuracy [ROC plot, Table with accuracy and AUC values for test]
+
+```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
+r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
+test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
+Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
+ConfMat3 <- as.data.frame.matrix(Conf_mat3$table)
+Accuracy3 <- Conf_mat3$overall["Accuracy"]
+stargazer(ConfMat3, summary = FALSE, type = "text", title = "Confusion Matrix")
+stargazer(Accuracy3, type = "text", summary = FALSE)
+invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
+
+```
+Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
+
+#Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
+
+```{r, message = FALSE, fig.show="hold", out.width="50%"}
+conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matrix with label" )
+```
+
+### Address assessment
 
 
 ## Conclusion
-Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
+### Key Insights
 
-Key Insights
-Limitations
-Recommendations/Future Studies
+
+
+
+
+### Limitations
+
+
+
+
+
+### Recommendations/Future Studies
 
 
