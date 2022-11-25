@@ -36,5 +36,36 @@ For the Second Research Question, we chose to use logistic regression to model t
 
 # Results
 Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
+
+```{r}
+r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
+
+```
+
+```{r, out.width= 50%}
+ggplot( train, aes(x = explicit_fac, y= danceability, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 1. Danceability and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= speechiness, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 2. Speechiness and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= tempo, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Tempo and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= energy, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Energy and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+```
+
+As discussed previously, a low P-value is a sign that our predictor variable has an association with our outcome variable. Shown in our table below, our model's predictors are all statistically significant in predicitng a song's explicitness. From the bar graphs above, we can see that only tempo has a slightly negative effect on explicitness (on averge, the more speedy, the less explicit), while the speechiness, dancebility, and tempo are postively related to explicitness. More specifically, we can see speechiness and dancebility have stronger relationshipe to explicitness as compared to tempo and energy.
+
+In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit compared to being non-explicit is 1.022 times for every percentage unit increase in the danceability; 1.006 times for every percentage unit increase in the energy predictor; 1.09 times for every percentage unit increase in the speechiness; 0.996 times for every unit increase in the tempo.
+
+Even though every predictor in the analysis has been proved to be statistically significant, showing the evident association between the predictors and the explicitness, when we look at the size of odds ratio, it is however not that impactful. This makes sense given that a music is consist of many elements and only enhancing one aspect should not have a huge effect on explicitness. For instance, if danceability increases by 10%, it will only make the odds of being explicit increase 6% (1.006**10 = 1.06). In other words, very danceable records are more likely have extplicit lyrics, while the impact isn't strong. Energy also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Out of expectation, tempo's odds ratio indicates that, as a song becomes slower, it will be more likely to be inexplicit lyrics. 
+
 # Conclusion
 Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
