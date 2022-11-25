@@ -474,6 +474,7 @@ stargazer(Accuracy3, type = "text", summary = FALSE)
 invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
 
 ```
+
 Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
 
 #Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
@@ -488,16 +489,25 @@ conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matri
 ## Conclusion
 ### Key Insights
 
-
-
+Based on the second research result, we can conclude that the four musical aspects we chose are indeed related to explicitness and can predict explicitness to some extent. Overall, the model is a good fit with an acceptable prediction accuracy score (81%). 
 
 
 ### Limitations
 
-
-
-
+Despite providing insights toward predicting explicitness, the analysis indeed has some limitations. First, our model is weak at identifying non-explicit songs, probably because there was a smaller distribution of explicit songs in out dataset, which is indicative of the pattern of music in the real world because the majority of songs are non-explicit; however, such distribution might cause the training process being rough. Secondly, more or better predictors may have been needed for this particular research question, such as what language of the song is. Thirdly, Spotify likely employs the use of speech recognition (natural language processing) models to flag the explicitness of songs, not statistical methods, meaning that they ignore most of the musicical aspects, such as tone, into account when classifying the explicitness. Thus, the research where we used the four predictors to predict such "latent" variable statistically may have presented difficulty at the beginning. To conclude, these results do prove that our model is insufficient for predicting the explicitness of songs (there are 19% of errors in predicting), but overall it is very successful when classifying the explicit songs. Future work needs to pay more attention to the fundamental causes of wrongly flagging non-explicit songs as explicit songs. 
 
 ### Recommendations/Future Studies
 
+#Appendix
+## Binned Residual Plot
 
+```{r}
+library(performance)
+binnedplot(fitted(r2), residuals(r2,"response"), xlab = "Predicted Probability")
+results <- binned_residuals(r2)
+as.data.frame(results) 
+if (require("see")){plot(results)}
+plot(results$xbar, results$ybar)
+which(results$ybar < -0.1)
+```
+Overall, the binned residual plot shows that we have a good fit. However, we indeed need to be cautious about a few of outliers.From the residual binned plot, we can see that there are 5 outliers having residual larger than 0.1 difference from what was expected. Given that our sample size is huge enough, so we would not do further actions on these 5 outliers.
