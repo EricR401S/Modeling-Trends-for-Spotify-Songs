@@ -14,6 +14,7 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 knitr::opts_chunk$set(echo = TRUE)
 #Load Libraries
 library(psych)
+library(ggplot2)
 library(corrplot)
 library(dplyr)
 library(table1)
@@ -105,7 +106,7 @@ Second Research Question Portion
 # Abstract: 
 A few sentences describing the purpose of the analysis, the data, and key results
 
-The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. Additionally, we shall treat the response variable as a factor (explicitness = 1, non-explicitness = 0). To accomplish this, we employed multiple logistic regression. The results show ... (tbw)
+The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. Additionally, we shall treat the response variable as a factor (explicitness = 1, non-explicitness = 0). To accomplish this, we employed multiple logistic regression. The results show that 
 
 
 #Introduction: Provide more background on the data and research questions. Be sure to cite the data and background information appropriately (APA style is fine)
@@ -117,27 +118,41 @@ TBW (Copy Paste with Citations)
 Describe the process you used to conduct analysis. This includes EDA and any relevant
 data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
 
-For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose (cite). In this case, a song is either explicit or non-explicit, two categories. The second step was to divide our data into training and tests sets, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, estimating multicollinearity, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds that our song may be explicit (cite). For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study (cite). 
+For this analysis, we chose to use logistic regression to model the relationship between explicitness and its predictors. This type of regression model is used for variables that have only two values from which to choose. In this case, a song is either explicit or non-explicit, two categories. The second step was to divide our data into `train set` and `test set`, where the former and latter are comprised of songs from 2010-2017 and 2018-19 respectively. Then the process concludes with three final steps, assessing the significance of the predictors in the model as well as their insights, checking potential multicollinearity by VIF scores, and evaluating the model's accuracy. For the first, the coefficients of our predictors indicate the odds ratio that our song may be explicit as compared to inexplicit. For the second, we verify that our variables are not influencing each other too much because they are assumed to be independent of each other. For the third, the model generated from the train set is used to predict the likelihood of a song being explicit or non-explicit in the test set, which is the final step in logistic regression (cite). We then gauge the effectiveness of our model by observing the general accuracy values and the Area Under the Curve (AUC) value, another measure of how well the model is predicting the negatives and positives in a study. 
+
+```{r}
+r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
+
+```
 
 # Results
+```{r, out.width= 50%}
+ggplot( train, aes(x = explicit_fac, y= danceability, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 1. Danceability and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= speechiness, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 2. Speechiness and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= tempo, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Tempo and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+
+ggplot( train, aes(x = explicit_fac, y= energy, fill = explicit_fac ) ) + 
+  geom_boxplot() + coord_flip() + scale_fill_brewer(palette = "Blues") +
+  labs( title = "Figure 3. Energy and Explicitness" ) + theme_classic() + theme(legend.position = "none")
+```
+
 Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
-
-
-The interpretations : 
 
 As discussed previously, a low P-value is a sign that our predictor variable has an association with our outcome variable. Shown in our table below, our model's predictors are all statistically significant in predicitng a song's explicitness. 
 
-In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit...
+In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit compared to being non-explicit is 1.022 times for every percentage unit increase in the danceability; 1.006 times for every percentage unit increase in the energy predictor; 1.09 times for every percentage unit increase in the speechiness; 0.996 times for every unit increase in the tempo.
 
-1. increase by 1.022 times for every percentage unit increase in the danceability predictor.
+Even though every predictor in the analysis has been proved to be statistically significant, showing the evident association between the predictors and the explicitness, when we look at the size of odds ratio, it is however not that impactful. This makes sense given that a music is consist of many elements and only enhancing one aspect should not have a huge effect on explicitness. For instance, if danceability increases by 10%, it will only make the odds of being explicit increase 6% (1.006**10 = 1.06). In other words, very danceable records are more likely have extplicit lyrics, while the impact isn't strong. Energy also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Out of expectation, tempo's odds ratio indicates that, as a song becomes slower, it will be more likely to be inexplicit lyrics. 
 
-2. increase by 1.006 times for every percentage unit increase in the energy predictor. 
-
-3. increase by 1.09 times for every percentage unit increase in the speechiness predictor. 
-
-4. decrease by 0.996 times for every unit increase in the tempo predictor.
-
-The results here have logical sense. What is most impressive is how danceability is strongly related to a track's explicitness. In other words, very danceable records are more likely have explicit lyrics. Energy was a bit weaker in this regard, but also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Lastly, tempo's odds indicate that, as a song becomes slower, it will be less likely to have explicit lyrics. 
 
 
 In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
@@ -174,9 +189,7 @@ invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes
 ```
 
 
-```{r}
-stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
-```
+
 
 
 Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
