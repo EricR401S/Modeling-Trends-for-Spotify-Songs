@@ -37,6 +37,8 @@ For the Second Research Question, we chose to use logistic regression to model t
 # Results
 Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.
 
+
+#RQ2
 ```{r}
 r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
 stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
@@ -67,5 +69,20 @@ In terms of interpreting the coefficients, holding all other variables constant,
 
 Even though every predictor in the analysis has been proved to be statistically significant, showing the evident association between the predictors and the explicitness, when we look at the size of odds ratio, it is however not that impactful. This makes sense given that a music is consist of many elements and only enhancing one aspect should not have a huge effect on explicitness. For instance, if danceability increases by 10%, it will only make the odds of being explicit increase 6% (1.006**10 = 1.06). In other words, very danceable records are more likely have extplicit lyrics, while the impact isn't strong. Energy also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Out of expectation, tempo's odds ratio indicates that, as a song becomes slower, it will be more likely to be inexplicit lyrics. 
 
+
+# Multicolliearity
+
+In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
+
+```{r}
+library(car)
+a <- vif(r2) 
+stargazer(a, type = "text", summary = FALSE)
+```
+
+There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
+
 # Conclusion
+
+
 Describe the key takeaways from your analysis, limitations, and future work that can be done to advance knowledge in this area.
