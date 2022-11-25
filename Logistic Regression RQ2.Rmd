@@ -106,13 +106,14 @@ Second Research Question Portion
 # Abstract: 
 A few sentences describing the purpose of the analysis, the data, and key results
 
-
-
-
+Our main research purpose the analysis is to explore the effect of most of the musical aspects on its popularity and explicitness. In other words, we want to find out what causes the song to go viral and what are the variables that cause the song to be flagged as explicit. The analysis may help music producers get a better sense at both marketing and social aspects. The dataset used is from a larger spotify dataset with variables: popularity, explicitness, danceability, energy, speechiness, loudness, acousticness, instrumentalness, and tempo. The key results show that [add RQ1]. It also demonstrates that danceability, energy, speechiness, and tempo are all able to predict explicitness to some extent, while if the music producers do not want the song to be flagged as explicit, they might want to make dancebility and energy aspect less evident.
 
 #Introduction: Provide more background on the data and research questions. Be sure to cite the data and background information appropriately (APA style is fine)
 
-The second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo. The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019. The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. Additionally, we shall treat the response variable as a factor (explicitness = 1, non-explicitness = 0). To accomplish this, we employed multiple logistic regression. The results show that 
+The data set used in this research is a subset of a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contains 104,767 tracks and 23 variables for songs between 2010 and 2019.
+
+Given that the second research question aims to predict whether a song is explicit or not based on its danceability, energy, speechiness, and tempo, the second RQ is thus formulated as "To what extent can the musicality of a song predict whether a song will be explicit or non-explicit?"The goal is to predict the probability and use a 0.5 threshold to categorize whether a song is explicit or not, using a binary response variable based on continuous variables danceability, energy, speechiness, and tempo. Additionally, we shall treat the response variable as a factor (explicitness = 1, non-explicitness = 0). To accomplish this, we employed multiple logistic regression. 
+ 
 
 TBW (Copy Paste with Citations)
 
