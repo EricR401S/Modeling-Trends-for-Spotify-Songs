@@ -491,13 +491,13 @@ conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matri
 ## Conclusion
 
 For our first research question we derive the conclusions that:
-1. The  predictors *acousticness*, *danceability*, *energy*, *instrumentatalness*, *loudness*, and *speechiness* are statistically significant and are highly influential in determining the response variable *popularity* of the song. *Tempo* however, is not a influential variable according to the model analysis.
+1. The  predictors *acousticness*, *danceability*, *energy*, *instrumentatalness*, *loudness*, and *speechiness* are statistically significant and are highly influential in determining the response variable *popularity* of the song in the 2010s decade. *Tempo* however, is not a influential variable according to the model analysis.
 
-2. With the exception of *energy* and *instrumentalness*, the *popularity* score for every track increases with increase in the value of the predictors. 
+2. With the exception of *energy* and *instrumentalness*, the *popularity* score for every track in the 2010s decade increases with increase in the value of the predictors. 
 
-2. As all the VIF values are below 5, there is no significant multicolinearity observed in the model predictors. 
+3. As all the VIF values are below 5, there is no significant multicolinearity observed in the model predictors. 
 
-2. The model fit improves after removing the influential points, we observe the Adjusted-Rsquared value to increase from 0.1725 to  0.3059. This could be a potential limitation as even after removing influential points, the predictors can only explain variability in outcome to upto 30.59%. This indicates a possibility of other significant predictors not taken into account in the analyis. For example popularity of a track would also be dependent largely on who the artist is.
+4. The model fit improves after removing the influential points, we observe the Adjusted-Rsquared value to increase from 0.1725 to  0.3059. This could be a potential limitation as even after removing influential points, the predictors can only explain variability in outcome to upto 30.59%. This indicates a possibility of other significant predictors which have not been taken into account in the analysis. For example popularity of a track would also be dependent largely on who the artist is.
 
 ### Key Insights
 
