@@ -26,7 +26,7 @@ library(olsrr)
 library(kableExtra)
 ```
 
-```{r subset, echo = FALSE, message=FALSE, results = FALSE}
+```{r , echo = FALSE, message=FALSE, results = FALSE}
 #read original data set
 df <- read.csv("https://github.com/EricR401S/Modeling-Trends-for-Spotify-Songs/raw/main/archive/tracks.csv")
 ```
@@ -99,7 +99,7 @@ For this study, we subset a [Spotify dataset](https://www.kaggle.com/datasets/ya
 
 ## Introduction
 
-With over 456 million monthly active users as of September 2022, Spotify is one of the largest music streaming service providers. Citation: It has redefined the music streaming game by using algorithms to optimize user preferences and music stream monetization. This prompted music producers and creators to pay closer attention to the sonic characteristics of songs that drive more streams on this platform. Although Spotify's algorithm remains one of the unrivaled enigma of music recommendation, the company builds large databases of tracks on the platform with granular details on their sonic characteristics synthesized by the algorithm. It is with this information that we answered our research questions. 
+With over 456 million monthly active users as of September 2022, Spotify is one of the largest music streaming service providers. *Citation* that redefined the music streaming game by using algorithms to optimize user preferences and music stream monetization. This prompted music producers and creators to pay closer attention to the sonic characteristics of songs that drive more streams on the platform. Although Spotify's algorithm remains one of the unrivaled enigmas of music recommendation, the company builds large databases of tracks on the platform with granular details on their sonic characteristics synthesized by the algorithm. *It is with this information that we answered our research questions.* 
 
 The data set used in this research contained `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019 obtained from a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. These variables describe the sonic characteristics of songs and were defined below from Spotify's API documentation.
 
@@ -174,16 +174,13 @@ df2 = subset[RQ2_relation]
 
 **Exploratory Data Analysis for the variables**
 
-To better understand the data set, the popularity variable was binned into 5 groups ranging from least popular to more popular across group 1 to group 5 (See Appendix : Table of Popularity Grouping).
+To better understand the data set, all songs popularity below 80 were compared to those with popularity above 80, ideally those between 100 and 80 popularity index score.(*see Appendix*)
 
 ```{r, echo = FALSE, message=FALSE, results = FALSE }
-#create datasets for EDA
-#5 pop grpups across the data for better grouping
-edadf1<- df1%>%mutate(popularity_fac= case_when(popularity <= 20 ~ "pop group 1",
-                                                popularity <= 40 ~ "pop group 2",
-                                                popularity <= 60~ "pop group 3",
-                                                popularity <= 80~ "pop group 4",
-                                                popularity <= 100 ~ "pop group 5"))
+#create data sets for EDA
+#5 pop groups across the data for better grouping
+edadf1<- df1%>%mutate(popularity_fac= case_when(popularity >= 20 ~ "Top group > 80",
+                                                popularity <= 80 ~ "Top group < 80"))
 
 #eda dataset for 2: includes release year
 q2 <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
@@ -375,16 +372,20 @@ confinterval_scaled <- confint(scaled, level = 0.95)
 kable(confinterval_scaled, caption =  "Confidence interval ranges for popularity model") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 
-Importance of the predictors insert it here
+The predictors in this model were found to be important in the order visualized below.
 
+```{r echo = FALSE, message=FALSE, results = FALSE , out.width = "50%", fig.align='center'}
+tvalues <- data.frame(summary(model_noinfluential)$coefficients[,3])
+name <- c("acousticness","danceability","energy","instrumentalness","tempo","loudness","speechiness")
+tdf <- data.frame(cbind(name, tvalues[2:8,]))
 
+```
 
 **Logistic Model**
 
-```{r}
+```{r echo = FALSE, message=FALSE, results = FALSE}
 r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
 stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
-
 ```
 
 From the model results above, the model predictors are all statistically significant in predicting a song's explicitness at $p< 0.005$.In terms of interpreting the coefficients, holding all other variables constant, the odds of a song being explicit compared to being non-explicit is 1.022 times for every percentage unit increase in the danceability; 1.006 times for every percentage unit increase in the energy predictor; 1.09 times for every percentage unit increase in the speechiness; 0.996 times for every unit increase in the tempo.
@@ -413,8 +414,7 @@ Even though every predictor in the analysis has been proved to be statistically 
 
 ### Model assesment
 
-**Checking Assumptions of the Linear Model**
-
+**Checking Assumptions of the linear Model**
 <ul>
 * **Linearity**: The residuals vs predictor plot shows that there in no pattern between the two variables and as earlier remarked in Fig 2 there is a linear relationship between interval and duration.
 * **Independence of error terms** : The points on the residual vs fitted plot are randomly spread so there was no clear violation of this assumption.
@@ -423,53 +423,39 @@ Even though every predictor in the analysis has been proved to be statistically 
 <ul>
 In conclusion, the assumptions of the model do not not appear to be strongly violated.
 
-**Multicollinearity in the popularity model**
+**Multicollinearity in the linear model**
 
 The model predictors were tested for multicollinearity using the Variance Inflation Factor. In the table below we observed that there was no multicollinearity as all the VIF scores were below 5.
 ```{r echo = FALSE, message=FALSE, results = FALSE}
 vif1 <- vif(model_noinfluential)
-kable(vif1, caption =  "VIF Results") %>% kable_styling(position="center",latex_options = c("hold_position"))
+kable(vif1, caption =  "VIF Results for linear regression") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 **Outliers and Influential points**
 
 We checked the data for outlier and influential points and compared the effect of removing them on the model. We used Cook’s Distance to determine how much influence an observation has on the model with a higher distance meaning more influence as it uses the leverage and the residuals to calculate the score. All points having distance above 4/N, where N is the sample size, are influential points were excluded from the data points bringing the data set to 9838 observations. 
 After removing the influential points the model R^2 increased from about 17% to 31% and the tempo predictor became insignificant.
 
-```{r echo = FALSE, message=FALSE, results = FALSE}
+```{r echo = FALSE, message=FALSE, results = FALSE, fig.show="hold", out.width="50%", fig.align = "center"}
 cooksd <- cooks.distance(scaled)
 # Plot the Cook's Distance using the traditional 4/n criterion
 sample_size <- nrow(df1)
 plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
 abline(h = 4/sample_size, col="red")  # add cutoff line
 text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(cooksd),""), col="red")  # add labels
-# Removing Outliers
-# influential row numbers
-influential <- as.numeric(names(cooksd)[(cooksd > (4/sample_size))])
-df1_noinfluential <- df1[-influential, ]
+```
+**Multicollinearity in the logistic model**
+
+The model predictors were tested for multicollinearity using the Variance Inflation Factor. In the table below we observed that there was no multicollinearity as all the VIF scores were hardly above 1, which means the predictors were independent.
+
+```{r echo = FALSE, message=FALSE, results = FALSE}
+vif2 <- vif(r2)
+kable(vif2, caption =  "VIF Results for logistic regression") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 
+**Testing the model**
+Lastly, we looked at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives.
 
-
-
-Logistoc model
-
-
-# Multicolliearity
-
-In good practice, the VIF values will also be verified. They are hardly above 1, which means the variables are independent.
-
-```{r}
-library(car)
-a <- vif(r2) 
-stargazer(a, type = "text", summary = FALSE)
-```
-
-There is no predictor with a score higher than 5, it suggests multicollinearity issue is lifted in the research.
-
-# Prediction and Accuracy [ROC plot, Table with accuracy and AUC values for test]
-
-```{r warning=FALSE, echo=FALSE, message = FALSE, results='asis'}
-r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
+```{r warning=FALSE, echo=FALSE, message = FALSE, results="hide"}
 test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
 test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
 Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
@@ -478,13 +464,11 @@ Accuracy3 <- Conf_mat3$overall["Accuracy"]
 stargazer(ConfMat3, summary = FALSE, type = "text", title = "Confusion Matrix")
 stargazer(Accuracy3, type = "text", summary = FALSE)
 invisible(roc(test$explicit_fac,test_fitted_0,plot=T,print.thres=0.5,legacy.axes=T, print.auc =T,col="red3", main = "ROC Curve -- Logistic Regression Model : Explicitness")) # Inclusion here
-
 ```
-Lastly, we look at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives. 
 
-#Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
+Confusion Matrix table with labels (True Negatives, True Positives, we just need to know which one is which)
 
-```{r, message = FALSE, fig.show="hold", out.width="50%"}
+```{r, message = FALSE, fig.show="hold", out.width="50%", fig.align = "center"}
 conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matrix with label" )
 ```
 
@@ -512,9 +496,10 @@ Based on the second research result, we can conclude that the four musical aspec
 Despite providing insights toward predicting explicitness, the analysis indeed has some limitations. First, our model is weak at identifying non-explicit songs, probably because there was a smaller distribution of explicit songs in out dataset, which is indicative of the pattern of music in the real world because the majority of songs are non-explicit; however, such distribution might cause the training process being rough. Secondly, more or better predictors may have been needed for this particular research question, such as what language of the song is. Thirdly, Spotify likely employs the use of speech recognition (natural language processing) models to flag the explicitness of songs, not statistical methods, meaning that they ignore most of the musicical aspects, such as tone, into account when classifying the explicitness. Thus, the research where we used the four predictors to predict such "latent" variable statistically may have presented difficulty at the beginning. To conclude, these results do prove that our model is insufficient for predicting the explicitness of songs (there are 19% of errors in predicting), but overall it is very successful when classifying the explicit songs. Future work needs to pay more attention to the fundamental causes of wrongly flagging non-explicit songs as explicit songs. 
 
 #Appendix
+
 ## Binned Residual Plot
 
-```{r}
+```{r warning=FALSE, echo=FALSE, message = FALSE, results="hide"}
 library(performance)
 binnedplot(fitted(r2), residuals(r2,"response"), xlab = "Predicted Probability")
 results <- binned_residuals(r2)
