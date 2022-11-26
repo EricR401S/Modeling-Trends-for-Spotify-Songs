@@ -100,9 +100,9 @@ For this study, we subset a [Spotify dataset](https://www.kaggle.com/datasets/ya
 
 ## Introduction
 
-With over 433 million, monthly active users as of July 2022, Spotify is one of the largest music streaming service providers (Spotify, 2022). that redefined the music streaming game by using algorithms to optimize user preferences and music stream monetization. This prompted music producers and creators to pay closer attention to the sonic characteristics of songs that drive more streams on the platform. Although Spotify's algorithm remains one of the unrivaled enigmas of music recommendation, the company builds large databases of tracks on the platform with granular details on their sonic characteristics synthesized by the algorithm. *It is with this information that we answered our research questions.* 
+With over 433 million, monthly active users as of July 2022 (and increasing), Spotify is one of the largest music streaming service providers (Spotify, 2022). They ushered the music streaming market by using algorithms to optimize for user preferences and monetizing the music streams and ads (ProductBlogs). Labels and producers always look to the Billboard charts to produce songs that will sonically mimic successful songs or alter trends, and Spotify's place in the market adds even more charting information to this strategy (Hogan, 2018). Although Spotify's algorithm remains one of the unrivaled enigmas of music recommendation, the company builds large databases of tracks on the platform with granular details on the tracks' sonic characteristics, which are synthesized by the algorithm. *With these informational touchstones, we were able answer our research questions.* 
 
-The data set used in this research contained `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019 obtained from a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. These variables describe the sonic characteristics of songs and were defined below from Spotify's API documentation.
+The subset of data used in this research contained `r format(nrow(subset), big.mark = ",")` of observations/ tracks and `r ncol(subset)` of variables for songs between 2010 and 2019, obtained from a larger [spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks) that contained `r format(nrow(df), big.mark = ",")` tracks. These variables describe the sonic characteristics of songs and were defined below from Spotify's API documentation (Spotify, 2022).
 
 <ul>
 -**Popularity** is calculated by an algorithm that is based on how many times a track has been played and how recent those plays were. This is the response variable of interest for research question 1 (Spotify, 2022).
@@ -522,7 +522,11 @@ Burchell, C. (2019, May 27). 10 Tips for Making Your First Trap Beat. Inverse. R
 
 Edwords, E. (n.d.). Rap Song Structure Is TOO Important To Ignore. Retrieved October 20, 2022, from https://rhymemakers.com/rap-song-structure/
 
+Hogan, M. (2018). Billboard Charts Change to Count Paid Streams More Than Free. Retrieved November 25, 2022, from https://pitchfork.com/news/billboard-charts-change-to-count-paid-streams-more-than-free/
+
 Leviatan, Y. (2017, July 27). Making Music: The 6 Stages of Music Production. Waves. Retrieved October 20, 2022, from https://www.waves.com/six-stages-of-music-production
+
+ProductBlogs. How Spotify Built a $20 Billion Business by Changing How People Listen to Music. Retrieved November 25, 2022, from https://producthabits.com/how-spotify-built-a-20-billion-business-by-changing-how-people-listen-to-music/
 
 Spotify. (2022). Spotify Web API Reference | Spotify for Developers. Retrieved October 20, 2022, from https://www.waves.com/six-stages-of-music-production https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
 
