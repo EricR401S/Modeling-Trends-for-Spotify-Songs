@@ -128,7 +128,7 @@ The data set used in this research contained `r format(nrow(subset), big.mark = 
 **Relationship of interest and Justification of variables**
 
 In this research we sought to understand which musical attributes gauged the popularity of songs in the 2010s using acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness as predictors and to what extent could the danceability, energy, speechiness, and tempo of a song predict whether it was explicit or non-explicit? 
-The different variables combinations for the relationships of interest were choosen based on prior, domain knowledge of music. For the first research question, which concerns the features that popularized songs during the 2010s, a series of aforementioned predictors were chosen. What will follow is the justification for this "a priori" selection for both research questions.
+The different variables combinations for the relationships of interest were chosen based on prior, domain knowledge of music. For the first research question, which concerns the features that popularized songs during the 2010s, a series of aforementioned predictors were chosen. What will follow is the justification for this "a priori" selection for both research questions.
 
 Choosing the specific predictors to predict song popularity is due to the weight of their importance for the research question 1. Popular songs, whether they are an emotional ballad or a dance track, all have certain features to keep the listeners engaged and interested to repeat listening to these tracks (Leviatan, 2017). The tempo, energy and loudness indicate the pacing and sonic impact and pleasantness of the track. The speechiness, danceability and instrumentation (which also includes acoustic choices or "acousticness") dictate melody choices, chord progressions, instrument choices, wordings, vocal lines and more types sonic layers. However, the latter is very nuanced because it pertains to the genre choice of the producers. There are very popular songs with high instrumentation, no words and low danceability, such as songs from classical music. On the other hand, Pop and Rock songs vary their levels of instrumentation and acousticness and speechiness. Lastly, if the song is aimed towards a festive audience, such as a club song, then prioritizing danceability governs the levels of instrumentation and speechiness and lack of acousticness, and this prioritization varies by genre (Androids, 2017). In conclusion, the interplay of these factors influences the popularity of songs by making them memorable and enticing. 
 
@@ -175,21 +175,22 @@ df2 = subset[RQ2_relation]
 
 **Exploratory Data Analysis for the variables**
 
-To better understand the data set, all songs popularity below 80 were compared to those with popularity above 80, ideally those between 100 and 80 popularity index score.(*see Appendix*)
+To better understand the data set, all songs with popularity below 80 were compared to those with popularity above 80, ideally those between 100 and 80 popularity index score.(*see Appendix*)In this comparison we sought to understand what set apart the top 20% of the popular songs.
 
 ```{r, echo = FALSE, message=FALSE, results = FALSE }
 #create data sets for EDA
 #5 pop groups across the data for better grouping
-edadf1<- df1%>%mutate(popularity_fac= case_when(popularity >= 20 ~ "Top group > 80",
-                                                popularity <= 80 ~ "Top group < 80"))
+edadf1<- df1%>%mutate(popularity_fac= case_when(popularity >= 80 ~ "Popularity > 80",
+                                                popularity < 80 ~ "Popularity < 80"))
 
-#eda dataset for 2: includes release year
+#eda data set for 2: includes release year
 q2 <- c("explicit_fac", "danceability", "energy", "speechiness","tempo", "release_year")
 edadf2 = subset[q2]
 
 ```
 
 ```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
+
 #Relationship between danceability and popularity
 ggplot(edadf1) +
   aes(x = "", y = danceability, colour = popularity_fac) +
@@ -220,8 +221,8 @@ ggplot(edadf1) +
   facet_wrap(vars(popularity_fac))
 ```
 
-In Figure 1, we observe that more popular songs have a higher average danceability than less popular songs. 
-In Figure 2, we observe that, as songs become more popular, the energy remains evenly distributed, but the instrumentalness is reduced with the exception of a few outliers, although the relationship between the two variables becomes insignificant.
+In Figure 1, we observed that more popular songs have a higher average danceability than less popular songs. 
+In Figure 2, we observed that, as songs became more popular, the energy remained evenly distributed, but the instrumentalness is reduced with the exception of a few outliers, although the relationship between the two variables became insignificant.
 
 ```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", fig.show='hold'}
 #Relationship between loudness and tempo along the popularity scale
@@ -229,8 +230,8 @@ ggplot(edadf1) +
   aes(x = loudness, y = tempo) +
   geom_point(shape = "circle", size = 1.5, colour = "#00BA38") +
   labs(
-    x = "loudness",
-    y = "tempo",
+    x = "Loudness",
+    y = "Tempo",
     title = "Loudness and Tempo along the popularity scale",
     caption = "Fig 3"
   ) +
@@ -243,8 +244,8 @@ ggplot(edadf1) +
   aes(x = speechiness, y = instrumentalness) +
   geom_point(shape = "circle", size = 1.5, colour = "#619CFF") +
   labs(
-    x = "speechiness",
-    y = "instrumentalness",
+    x = "Speechiness",
+    y = "Instrumentalness",
     title = "Speechiness and Instrumentalness along the popularity scale",
     caption = "Fig 4"
   )+
@@ -254,26 +255,25 @@ ggplot(edadf1) +
 
 ```
 
-For Figure 3, the relationship between tempo and loudness reveals a very specific recipe for the most popular songs. This group's tempo lies between 50-200 BPM (beats per minute) and -20 to 0 db, while other groups' tempo and loudness profiles remain spread out across the axes of tempo and loudness. Similarly, for Figure 4, although the speechiness values remain evenly distributed, the most popular songs exhibit a massive reduction in values in instrumentation.
+For Figure 3, the relationship between tempo and loudness revealed a very specific recipe for the most popular songs. The popularity greater than 80 group had tempo between 50-200 BPM (beats per minute) and -20 to 0 db, while other groups' tempo and loudness profiles remained spread out across the axes of tempo and loudness. Similarly, for Figure 4, although the speechiness values remained evenly distributed, the most popular songs exhibited a massive reduction in values in instrumentation.
 
-Overall, the insights show that there seems to be an assortment of musical attributes that define an extremely popular song, yet they seem to be less pronounced for the less popular groups of songs. In other words, the most popular song profiles demonstrate an absence of instrumentalness and a specific range of tempo and loudness values.
+Overall, the insights showed that there seems to be an assortment of musical attributes that define an extremely popular song, yet they seem to be less pronounced for the less popular groups of songs. In other words, the most popular song profiles demonstrated an absence of instrumentalness and a specific range of tempo and loudness values.
 
-*RQ2*
 For Figure 5, it is clear that the explicit content in music has risen over the past decade. As for Figure 6, the energy in explicit songs is centered around a mean of 0.680, while the non explicit songs are skewed to a higher energy metric. In terms of Figure 7, the danceability of songs are centered around the mean of 0.687 for explicit songs and 0.599 for non-explicit songs. As for Figure 8, on average, explicit songs are less speechy than non-explicit songs. In conclusion, the chosen variables would give us a great classification of explicit and non explicit songs moving forward. 
 
 ```{r echo=FALSE, message = FALSE, out.width = "50%", results = "hide", figures-side, fig.show='hold'}
 #explicity over the years
 ggplot(edadf2) +
-  aes(x = release_year, colour = explicit_fac) +
-  geom_density(adjust = 1L, fill = "#112446") +
-  scale_color_manual(
+  aes(x = release_year, fill = explicit_fac) +
+  geom_histogram(bins = 30L) +
+  scale_fill_manual(
     values = c(`Non-Explicit` = "#440154",
-    Explicit = "#FDE725")
+    Explicit = "#FD8B25")
   ) +
   labs(
     title = "Explicit and non explicit content in music over the years",
     x = "Release year",
-    y = "Density of explicit content in music ",
+    y = "Distriution of explicit content in music ",
     caption = "Fig 5"
   )+
   scale_x_continuous(breaks=seq(2010,2019,1))+
@@ -286,7 +286,7 @@ ggplot(edadf2) +
   geom_histogram(bins = 30L, fill = "#112446") +
   scale_color_manual(
     values = c(`Non-Explicit` = "#440154",
-    Explicit = "#FDE725")
+    Explicit = "#FD8B25")
   ) +
   labs(
     title = "Energy in explicit and non explicit songs",
@@ -300,7 +300,7 @@ ggplot(edadf2) +
   geom_histogram(bins = 30L) +
   scale_fill_manual(
     values = c(`Non-Explicit` = "#440154",
-    Explicit = "#FDE725")
+    Explicit = "#FD8B25")
   ) +
   labs(
     title = "Danceability in explicit and non explicit songs",
@@ -314,7 +314,7 @@ ggplot(edadf2) +
   geom_boxplot() +
   scale_fill_manual(
     values = c(`Non-Explicit` = "#440154",
-    Explicit = "#FDE725")
+    Explicit = "#FD8B25")
   ) +
   theme_minimal() +
   labs(
@@ -412,7 +412,6 @@ ggplot( train, aes(x = explicit_fac, y= energy, fill = explicit_fac ) ) +
 From the bar graphs above, we can see that only tempo has a slightly negative effect on explicitness (on average, the more speedy, the less explicit), while the speechiness, danceability, and tempo are positively related to explicitness. More specifically, we can see speechiness and danceability have stronger relationship to explicitness as compared to tempo and energy.
 Even though every predictor in the analysis has been proved to be statistically significant, showing the evident association between the predictors and the explicitness, when we look at the size of odds ratio, it is however not that impactful. This makes sense given that a music is consist of many elements and only enhancing one aspect should not have a huge effect on explicitness. For instance, if danceability increases by 10%, it will only make the odds of being explicit increase 6% (1.006**10 = 1.06). In other words, very danceable records are more likely have explicit lyrics, while the impact isn't strong. Energy also implied a similar relationship. As for speechiness, its extremely high odds are best understood by thinking "the more words a song has, the more likely it is to have some explicit content". Out of expectation, tempo's odds ratio indicates that, as a song becomes slower, it will be more likely to be inexplicit lyrics. 
 
-
 ### Model assesment
 
 **Checking Assumptions of the linear Model**
@@ -454,6 +453,7 @@ kable(vif2, caption =  "VIF Results for logistic regression") %>% kable_styling(
 ```
 
 **Testing the model**
+
 Lastly, we looked at the final and most important piece, the accuracy of our model on the test set. Shown below are the ROC curve and the confusion matrix, as well as the overall accuracy values. One of our challenges was addressing the small number of explicit songs in our data, where it might hurt model accuracy. That concern was proven true when our model failed at correctly classifying 3,937 explicit songs. It had an overall, high accuracy of 81%, a sensitivity of 97.9% and a specificity of 14%. The sensitivity value signifies that our model is efficient at identifying non-explicit songs, while our specificity value demonstrates that our model is lacking when attempting to identify an explicit song. Also, the AUC value was a 79% success rate of distinguishing negatives and positives.
 
 ```{r warning=FALSE, echo=FALSE, message = FALSE, results="hide"}
