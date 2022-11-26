@@ -497,7 +497,7 @@ For the first research question, in future studies, we can achieve better explan
 
 There are some variables that could have been relatively interesting in terms of prediction. To illustrate, one could predict the scale of a song based on the popularity, in addition to other predictors. The study maybe expanded to include variables like duration, as popular songs tend not to be very lengthy. However, some were not chosen because they were differently coded, such as time signature, which has an extremely limited set of plausible values (lacks signatures like 6/8). Predictors like Liveness, which parametrizes a song's performance as a live or studio quality recording, have not been taken into consideration but can be probed for gaining more insights as the popularity of live songs seems to be increasing in recent times. 
 
-For our second research question, future work needs to pay more attention to the fundamental causes of wrongly flagging non-explicit songs as explicit songs. Incorporation of more songs in the dataset that are explicit will lead to a more balanced training process which can lead to better predictive power. We can incorporate predictors like language and duration to check for the predictive power of the model. 
+For our second research question, future work needs to pay more attention to the fundamental causes of wrongly flagging non-explicit songs as explicit songs. Incorporation of more songs in the dataset that are explicit will lead to a more balanced training process which can lead to better predictive power. We can incorporate predictors like language and duration to check for the predictive power of the model. Interaction terms may be investigated for further improving the predictive power of the analysis.
 
 \newpage
 
