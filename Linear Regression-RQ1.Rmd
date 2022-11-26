@@ -1,0 +1,308 @@
+---
+title: "Multi Linear Regression-RQ1"
+output: pdf_document
+date: "2022-11-11"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#Load Libraries
+library(ggplot2)
+library(psych)
+library(corrplot)
+library(dplyr)
+library(table1)
+library(boot)
+library(MASS)
+library(equatiomatic)
+library(jtools)
+library(car)
+library(kableExtra)
+```
+
+```{r}
+#Load the data
+df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
+```
+
+## Linear Regression Model
+
+Our initial model contained all the 7 predictors selected in the data section above was put through a backward AIC selection to come up with the most pertinent predictors of popularity.
+
+```{r}
+linear1 <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+ tempo+ loudness+speechiness , data = df1)
+backward <- stepAIC(linear1, trace=FALSE, direction = 'backward')
+summ(backward, digits = 4)
+```
+**Should we think of mean centering these variables?**
+
+A centering attempt.
+
+```{r}
+#plot(backward)
+
+#divide first
+df1$danceability0.1 <- (df1$danceability)*10
+df1$energy0.001 <- (df1$energy)*1000
+df1$instrumentalnes0.001 <- (df1$instrumentalness)*1000
+
+
+#centered
+df1$acousticness_centered <- scale(df1$acousticness, scale = FALSE)
+df1$danceability0.1_centered <- scale(df1$danceability0.1, scale = FALSE)
+df1$energy0.001_centered <- scale(df1$energy0.001, scale = FALSE)
+df1$instrumentalness0.001_centered <- scale(df1$instrumentalnes0.001, scale = FALSE)
+df1$tempo_centered <- scale(df1$tempo, scale = FALSE)
+df1$loudness_centered <- scale(df1$loudness, scale = FALSE)
+df1$speechiness_centered <- scale(df1$speechiness, scale = FALSE)
+
+scaled <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1)
+summ(scaled, digits = 7)
+```
+```{r}
+confinterval_scaled <- confint(scaled, level = 0.95)
+kable(confinterval_scaled, caption =  "conf interval table for scaled model") %>% kable_styling(position="center",latex_options = c("hold_position"))
+```
+
+**Acousticness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average acoustiness for a song with a 39 popularity score is `r mean(df1$acousticness)`.We are 95% confident that (x1, x2) contains the true value for acoustiness and for every 1 *unit* increase in acoustiness of a song the average popularity score increases by approximately 1.8 holding all other factors constant.
+
+**Danceability** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average danceability for a song with a 39 popularity score is `r mean(df1$danceability)`.We are 95% confident that (x1, x2) contains the true value for danceability and for every 0.1 *unit* increase in danceability of a song the average popularity score increases by approximately 11.7 holding all other factors constant. 
+
+**Energy** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average energy for a song with a 39 popularity score is `r mean(df1$energy)`.We are 95% confident that (x1, x2) contains the true value for energy and for every 0.001 *unit* increase in energy of a song the average popularity score *decreases by approximately 0.0196 holding all other factors constant* 
+
+**Instrumentalness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average instrumentalness for a song with a 39 popularity score is `r mean(df1$instrumentalness)`.We are 95% confident that (x1, x2) contains the true value for instrumentalness and for every 0.001 *unit* increase in instrumentalness of a song the average popularity score *decreases by approximately 0.023 holding all other factors constant.* 
+
+**Tempo** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average tempo for a song with a 39 popularity score is `r mean(df1$tempo)`.We are 95% confident that (x1, x2) contains the true value for tempoand for every 1 *unit* increase in tempo of a song the average popularity score decreases by approximately 0.007 holding all other factors constant.
+
+**Loudness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average loudness for a song with a 39 popularity score is `r mean(df1$loudness)`.We are 95% confident that (x1, x2) contains the true value for loudness and for every 1 *unit* increase in loudness of a song the average popularity score increases by approximately 1 holding all other factors constant. 
+
+**Speechiness** is a significant predictor of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$).The average speechiness for a song with a 39 popularity score is `r mean(df1$speechiness`.We are 95% confident that (x1, x2) contains the true value for speechiness and for every 1 *unit* increase in speechiness of a song the average popularity score increases by approximately 6.4 holding all other factors constant.
+
+
+```{r}
+#plot(backward)
+#df$Duration_centered <- scale(df$Duration, scale = FALSE)
+equatiomatic::extract_eq(scaled, use_coefs = TRUE)
+```
+##Assumptions
+
+1. Linearity : Residual vs predictor graph. 
+
+2. Normal distribution of residuals: Normal Q-Q CURVE : Parses
+In the Normal Q-Q curve we can see that the residuals are normally distributed. Apart frrom a few values, the Normal Q-Q curve shows the residuals are fairly normally distributed. Observations whose standardized residuals are greater than 3 in absoulte values seem like possible outliers.
+
+
+3. Independence of error term: Residual vs fitted curve.
+
+
+4. homoscedasticity:( Equal variance of error terms) The Scale-Location graphs shows whether residuals are spread equally along the ranges of predictors. It’s good we see a horizontal line with equally (randomly) spread points. 
+
+
+>Linearity: The residuals vs predictor plot 
+
+```{r}
+#Assumptions of model 1
+#Linearity residuals vs duration
+library(olsrr)
+res <- resid(scaled)
+plot(df1$acousticness,res)
+plot(df1$danceability,res)
+plot(df1$energy,res)
+plot(df1$instrumentalness,res)
+plot(df1$tempo,res)
+plot(df1$loudness,res)
+plot(df1$speechiness,res)
+abline(0,0)
+#Independence and equal variance of error terms
+ols_plot_resid_fit(scaled)
+
+```
+
+> Independence of error terms : The points on the residual vs fitted plot are randomly spread 
+
+```{r}
+#Independence and equal variance of error terms
+ols_plot_resid_fit(scaled)
+```
+
+> Equal Variance of error terms : The points on the residual vs fitted plot are equally spread around the ab line(0,0) therefore we can conclude that there is homoscedasticity.
+
+```{r}
+#Independence and equal variance of error terms
+
+ols_plot_resid_fit(scaled)
+```
+
+> Normality of residuals: The points on the quantile-quantile plot are clustered along the 45 degree line so there are no clear violations of this assumption.
+
+```{r}
+ols_plot_resid_hist(scaled)
+#Normality of residuals
+ols_plot_resid_qq(scaled)
+
+```
+
+## Checking Multicollinearity
+
+The model appears to have no issues with multicollinearity as seen below all the VIF values are below 5 therefore the potential multicollinearity between energy and acoustiness is not there. 
+```{r}
+test <- vif(scaled)
+kable(test, caption =  "VIF table") %>% kable_styling(position="center",latex_options = c("hold_position"))
+```
+
+
+## Outliers and Influential point - Cooks distance
+```{r}
+ols_plot_cooksd_bar(scaled)
+
+```
+
+
+```{r}
+ols_plot_resid_lev(scaled)
+
+```
+
+
+## Potential Limitations 
+
+## Conclusion 
+  
+
+```{r}
+#ols_plot_resid_lev(backward[])
+
+```
+
+
+
+
+
+#Methods
+Describe the process you used to conduct analysis.
+
+This includes EDA and any relevant
+data cleaning information (e.g., did you exclude missing values? If so, how many? Did you collapse categories for any variables?) 
+Then describe the models you fit, and any changes you made to improve model fit (e.g., did you exclude any influential points? Did you do have to address multicollinearity issues? Did you transform any variables?). 
+
+Also describe model diagnostics. The organization of this section may depend on your particular dataset/analysis, but you may want to break it into subsections such as “Data,” “Models,” and “Model assessment.” Note that you do not present any results in this section.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+cooksd <- cooks.distance(scaled)
+# Plot the Cook's Distance using the traditional 4/n criterion
+sample_size <- nrow(df1)
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4/sample_size, col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(cooksd),""), col="red")  # add labels
+# Removing Outliers
+# influential row numbers
+influential <- as.numeric(names(cooksd)[(cooksd > (4/sample_size))])
+df1_noinfluential <- df1[-influential, ]
+
+```
+
+
+```{r}
+model_noinfluential <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness_centered, data = df1_noinfluential)
+summ(model_noinfluential, digits = 7)
+
+```
+
+
+```{r}
+#backward
+backward_noinfluential <- stepAIC(model_noinfluential, trace=FALSE, direction = 'backward')
+summ(backward_noinfluential, digits = 7)
+
+```
+
+We calculate the Cook’s Distance to observe how much influence an observation has on the model.It is a score that tells you how much the coefficients were changed if the observation at hand were removed. Higher means more influence. It uses the leverage and the residuals to calculate the score. All points having distance above 4/N, where N is the sample size, are influential points which have been excluded from the data points. This often leads to a very small cutoff if you have a large sample.
+We can see that the dataset we obtain after removing the influential points has 9838 observations. 
+After removing the influential points we can see that the model fit is better, with increased R^2 value of around 0.3059. We can also see that on removing high  influence pooints,  the coefficients of the predictors have changed. On analysis of the p-values for the coefficients, we can see that the *tempo* has become insignificant. 
+
+```{r}
+#Assumptions of final model
+#Linearity residuals vs duration
+library(olsrr)
+res <- resid(model_noinfluential)
+plot(df1_noinfluential$acousticness,res)
+plot(df1_noinfluential$danceability,res)
+plot(df1_noinfluential$energy,res)
+plot(df1_noinfluential$instrumentalness,res)
+plot(df1_noinfluential$tempo,res)
+plot(df1_noinfluential$loudness,res)
+plot(df1_noinfluential$speechiness,res)
+abline(0,0)
+#Independence and equal variance of error terms
+ols_plot_resid_fit(model_noinfluential)
+```
+
+
+
+```{r}
+ols_plot_resid_lev(model_noinfluential)
+ols_plot_cooksd_bar(model_noinfluential)
+ols_plot_resid_hist(model_noinfluential)
+
+```
+
+```{r}
+#Normality of residuals
+ols_plot_resid_qq(model_noinfluential)
+ols_plot_resid_fit(model_noinfluential)
+```
+```{r}
+
+```
+
+- **Pre-processing**
+To begin building the model, we shall examine the relationships between each musical attribute and popularity using scatter plots and correlation matrices to see if there is a linear relationship between each attribute and popularity. Then, we shall look into the relationships between the musical attributes themselves, keeping an eye out for any potential sources of multicollinearity.
+
+### Model
+
+For the first research question we used multiple linear regression to gauge how different song attributes affect popularity of songs in the 2010 decade. This was done by regressing the response variable popularity on to the predictor ......, with ....number of tracks.The predictors were mean centered to improve the interpretability of the model results with an increase in any predictor causing a change to the average popularity of a song. Because of the ranges of the predictors energy, danceability and instrumatelness were scaled. The seven predictors were put through a backward selection process with AIC to determine the best indicators of popularity. We choose, AIC as it imposes a lower penalty for having multiple independent variables and were seeking to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC was selected and fitted.
+
+### Model Assesment
+
+The model was checked for the assumptions of linearity, equal variance and independence of error terms, and normality of residuals. Using cooks distance we determined and removed influential points and a model was refitted.A Variance Inflation Factor (VIF) was run to investigate multicollinearity in the model. The model coefficients, p values, t values and confidence intervals were determined.
+
+Results
+
+Here you should present results for all aspects of the analysis. The structure of this section should mirror the structure of the methods section. For example, you can start with a few key EDA results (e.g., a table of descriptive statistics), then present model results, then address assessment. This is the section where you will primarily refer to tables and figures. You should have at least 1 figure for each research question that illustrates a key result of the analysis.\
+
+In Figure 1, we observe that more popular songs have a higher average danceability than less popular songs.
+In Figure 2, we observe that, as songs become more popular, the energy remains evenly distributed, but the instrumentalness is reduced with the exception of a few outliers, although the relationship between the two variables becomes insignificant.
+For Figure 3, the relationship between tempo and loudness reveals a very specific recipe for the most popular songs. This group's tempo lies between 50-200 BPM (beats per minute) and -20 to 0 db, while other groups' tempo and loudness profiles remain spread out across the axes of tempo and loudness. Similarly, for Figure 4, although the speechiness values remain evenly distributed, the most popular songs exhibit a massive reduction in values in instrumentation.
+
+Overall, the insights show that there seems to be an assortment of musical attributes that define an extremely popular song, yet they seem to be less pronounced for the less popular groups of songs. In other words, the most popular song profiles demonstrate an absence of instrumentalness and a specific range of tempo and loudness values.
+
