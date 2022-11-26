@@ -5,13 +5,17 @@ Dataset Link : https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-192120
 
 # Research Questions Overview with Variables of interest
 
+Research Questions:
+<ul>
+<li> What are the musical attributes that gauged the popularity of songs in the 2010s? *Dependent Variable (continuous) = popularity Independent Variables = acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness.* </li>
+<li> To what extent can the musicality of a song predict whether a song will be explicit or non-explicit? *Dependent Variable (categorical) = Explicitness Independent Variables = danceability, energy, speechiness, and tempo.* </li>
+</ul>
+
+# Methods used to model
+
 TBD
 
 # Key Results (at the end of the project cycle)
 
 TBD
 
-
-P.S. the original dataset did not fit due to the size limit. The subset might fit. The limit is 25 mb.
-
-Modifying Readme from R local Repo
