@@ -143,7 +143,7 @@ The original data set was cleaned so that only tracks and variables relevant to 
 
 For the relationship between popularity and acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness, we used multiple linear regression. Popularity, the response variable, was regressed on the predictors. The predictors were mean centered to improve the interpretability of the model results, with an increase in any predictor causing a change to the average popularity of a song. Additionally, predictors energy, danceability, speechiness and instrumentalness were scaled because their values were recorded with higher precision. The seven predictors were put through a backward selection process with AIC to determine the best indicators of popularity. We choose AIC, as it imposes a lower penalty for having multiple independent variables, and were seeking to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC was selected and fitted.
 
-For the relationship between explicitness and danceability, energy, speechiness, and tempo, we chose to use multiple logistic regression because explicitness was a categorical variable that followed a binomial distribution, meaning variable can only take two values. In this case, a song was either explicit or non-explicit, only two options. The explicitness variable was factored as 1 for explicitness and as 0 for non-explicitness. Lastly, the data was split between a train set using tracks released from 2010-2017 and tested on a test set comprised of tracks released from 2018 to 2019. 
+For the relationship between explicitness and danceability, energy, speechiness, and tempo, we chose to use multiple logistic regression because explicitness was a categorical variable that followed a binomial distribution, meaning variable can only take two values. In this case, a song was either explicit or non-explicit, only two options. The explicitness variable was factored as 1 for explicitness and as 0 for non-explicitness. For the predictors, to improve interpretability as well, danceability, energy, and speechiness were transformed into percentages. Lastly, the data was split between a train set using tracks released from 2010-2017 and tested on a test set comprised of tracks released from 2018 to 2019. 
 
 ###  Model Assessment
 
@@ -377,7 +377,7 @@ ggplot(tdf) +
 
 ```
 
-**Logistic Model**
+**RQ2 : Logistic Regression Model**
 
 ```{r echo = FALSE, message=FALSE}
 r2 <- glm(explicit_fac ~ ., data = train , family = binomial(link = logit))
