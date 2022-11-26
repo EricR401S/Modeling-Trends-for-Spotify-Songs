@@ -94,9 +94,9 @@ train <- train[keeps]
 
 ## Abstract
 
-The rise of music streaming, algorithms and the ubiquity of ear buds and headphones in the 2010s decade forever changed the way in which we consume music. Beyond the feelings it invokes in us, music is a combination of different qualities that often cannot be easily discerned by the untrained human ear. In contrast, producers and artists, with the advent of technology, brought forth musical innovations that changed the way how different aspects of music are recorded, successfully adapting to the new streaming consumption market. Spotify, for example, is the main streaming website that doubles as a gauge on what musical aspects, translated through a lens of streaming metrics, most influence popularity, as well as other indicators of a song's performance (CITE). 
+The rise of music streaming, algorithms and the ubiquity of ear buds and headphones in the 2010s decade forever changed the way in which we consume music. Beyond the feelings it invokes in us, music is a combination of different qualities that often cannot be easily discerned by the untrained human ear. In contrast, producers and artists, the ones with trained ears, brought forth musical innovations during this advent of technology that changed the way how different aspects of music are recorded, successfully adapting to the new streaming market. Spotify, for example, is the main streaming website that doubles as a gauge on what musical aspects, translated through a lens of streaming metrics, most influence popularity, as well as other indicators of a song's performance (Spotify, 2022). 
 
-For this study, we subset a [Spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks),with an assortment of descriptors focusing on the 2010s decade to investigate which qualities have been key to making songs popular and if they can be used to classify explicit and non explicit music, a phenomenon that has been rising during the past decade (CITE). We found that x, y,z play a key role in determining the average popularity index of a song and x, y,z can potentially be used to predict of  a song is explicit or not.  
+For this study, we subset a [Spotify dataset](https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks),with an assortment of descriptors focusing on the 2010s decade to investigate which qualities have been key to making songs popular and if they can be used to classify explicit and non explicit music, a phenomenon that has been rising during the past decade (Tayag, 2017). We found that x, y,z play a key role in determining the average popularity index of a song and x, y,z can potentially be used to predict of  a song is explicit or not.  
 
 ## Introduction
 
@@ -510,4 +510,23 @@ plot(results$xbar, results$ybar)
 which(results$ybar < -0.1)
 ```
 Overall, the binned residual plot shows that we have a good fit. However, we indeed need to be cautious about a few of outliers.From the residual binned plot, we can see that there are 5 outliers having residual larger than 0.1 difference from what was expected. Given that our sample size is huge enough, so we would not do further actions on these 5 outliers.
+
+
+## Bibliography
+
+Androids (2017, October 13). An Idiot’s Guide to EDM Genres. Retrieved October 20, 2022, from https://www.complex.com/music/an-idiots-guide-to-edm-genres/
+
+Billboard. (2022, October 29). Billboard Hot 100. Billboard Media. Retrieved November 3, 2022. https://www.billboard.com/charts/hot-100/2022-10-29/
+
+Burchell, C. (2019, May 27). 10 Tips for Making Your First Trap Beat. Inverse. Retrieved October 20, 2022, from https://flypaper.soundfly.com/produce/10-tips-for-making-your-first-trap-beat/#
+
+Edwords, E. (n.d.). Rap Song Structure Is TOO Important To Ignore. Retrieved October 20, 2022, from https://rhymemakers.com/rap-song-structure/
+
+Leviatan, Y. (2017, July 27). Making Music: The 6 Stages of Music Production. Waves. Retrieved October 20, 2022, from https://www.waves.com/six-stages-of-music-production
+
+Spotify (2022). Spotify Web API Reference | Spotify for Developers. https://developer.spotify.com/documentation/web-api/reference/#/operations/get-audio-features
+
+Tayag, Y. (2017, May 17). Expert on Male Psychology Explains How Pop Got Sexually Explicit. Retrieved October 20, 2022, from https://www.inverse.com/article/31842-pop-music-sexually-explicit-lyrics-rap-hip-hop
+
+Yamac. (2016). Spotify Dataset 1921-2020, 600k+ Tracks. Spotify. Retrieved October 3, 2022, from https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks
 
