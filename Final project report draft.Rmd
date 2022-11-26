@@ -415,26 +415,26 @@ From the bar graphs above, we can see that only tempo has a slightly negative ef
 
 ### Model assesment
 
-**Checking Assumptions of the linear Model**
+**Checking Assumptions for the linear Model**
 <ul>
-* **Linearity**: The residuals vs predictor plot shows that there in no pattern between the two variables and as earlier remarked in Fig 2 there is a linear relationship between interval and duration.
-* **Independence of error terms** : The points on the residual vs fitted plot are randomly spread so there was no clear violation of this assumption.
-* **Equal Variance of error terms** : The points on the residual vs fitted plot are equally spread around the ab line(0,0) therefore we can conclude that there is homoscedasticity.
-* **Normality of residuals**: The points on the quantile-quantile plot are clustered along the 45 degree line so there are no clear violations of this assumption.
+* **Linearity**: The residuals vs fitted plot shows that there is no clear pattern between the two variables, and, the data points do not move in a non-linear manner.
+* **Independence of error terms** : The points on the residual vs fitted plot are randomly spread, so there was no clear violation of this assumption. In addition, it is also assumed that Spotify recorded this data meticulously during their data collection process, which is validated by this plot.
+* **Equal Variance of error terms** : The points on the residual vs fitted plot are equally spread around the ab line(0,0); therefore, we can conclude that there is homoscedasticity.
+* **Normality of residuals**: The points on the quantile-quantile plot are mostly clustered along the 45 degree line, even though a minimal amount of points are trailing off at the beginning and the end of the line. However, there are there are no clear or strong violations of this assumption.
 <ul>
 In conclusion, the assumptions of the model do not not appear to be strongly violated.
 
 **Multicollinearity in the linear model**
 
-The model predictors were tested for multicollinearity using the Variance Inflation Factor. In the table below we observed that there was no multicollinearity as all the VIF scores were below 5.
+The model predictors were tested for multicollinearity using the Variance Inflation Factor. In the table below, we observed that there was no multicollinearity as all the VIF scores were below 5.
 ```{r echo = FALSE, message=FALSE, results = FALSE}
 vif1 <- vif(model_noinfluential)
 kable(vif1, caption =  "VIF Results for linear regression") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 **Outliers and Influential points**
 
-We checked the data for outlier and influential points and compared the effect of removing them on the model. We used Cook’s Distance to determine how much influence an observation has on the model with a higher distance meaning more influence as it uses the leverage and the residuals to calculate the score. All points having distance above 4/N, where N is the sample size, are influential points were excluded from the data points bringing the data set to 9838 observations. 
-After removing the influential points the model $R^2$ increased from about 17% to 31% and the tempo predictor became insignificant.
+We checked the data for outlier and influential points and compared the effect of removing them on the model. We used Cook’s Distance to determine how much influence an observation has on the model with a higher distance meaning more influence as it uses the leverage and the residuals to calculate the score. All points having distance above 4/N, where N is the sample size, are influential points, and those were excluded from the data points, which reduced the data set to 98,380 observations. 
+After removing the influential points the model's $R^2$ increased from about 17% to 31%, and the tempo predictor became statistically insignificant.
 
 ```{r echo = FALSE, message=FALSE, results = FALSE, fig.show="hold", out.width="50%", fig.align = "center"}
 cooksd <- cooks.distance(scaled)
