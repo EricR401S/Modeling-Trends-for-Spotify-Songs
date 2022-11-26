@@ -490,9 +490,21 @@ conf.mat.plot(as.factor(test_fitted), test$explicit_fac, main = "confusion matri
 
 ## Conclusion
 
+For our first research question we derive the conclusions that:
+1. The  predictors *acousticness*, *danceability*, *energy*, *instrumentatalness*, *loudness*, and *speechiness* are statistically significant and are highly influential in determining the response variable *popularity* of the song. *Tempo* however, is not a influential variable according to the model analysis.
+
+2. With the exception of *energy* and *instrumentalness*, the *popularity* score for every track increases with increase in the value of the predictors. 
+
+2. As all the VIF values are below 5, there is no significant multicolinearity observed in the model predictors. 
+
+2. The model fit improves after removing the influential points, we observe the Adjusted-Rsquared value to increase from 0.1725 to  0.3059. This could be a potential limitation as even after removing influential points, the predictors can only explain variability in outcome to upto 30.59%. This indicates a possibility of other significant predictors not taken into account in the analyis. For example popularity of a track would also be dependent largely on who the artist is.
+
 ### Key Insights
 
-Based on the second research result, we can conclude that the four musical aspects, danceability, energy, speechiness and tempo, we chose are indeed related to explicitness and can predict explicitness to some extent. Overall, the model is a good fit with an acceptable prediction accuracy score (81%). More specific ally, we found out that increasing danceability and speechiness would increase explicitness to certain extent, and thus for music producers who would like to avoid expliciitness, they would want to lower the danceability and the speechiness of the song.
+Analysis of the first research question, which dealt with inferring the significant predictors impacting the popularity of the song, we come to the conclusion that musical features like acousticness, danceability, energy, instrumentalness, loudness and speechiness are important attributes that impact the popularity of the song. A track that has high levels of acousticness, danceability, loudness and speechiness is likely to have a higher popularity score. While a track with low levels of energy and instrumentalness will have a lower popularity score. 
+
+
+Based on the second research result, we can conclude that the four musical aspects, danceability, energy, speechiness and tempo, we chose are indeed related to explicitness and can predict explicitness to some extent. Overall, the model is a good fit with an acceptable prediction accuracy score (81%). More specifically, we found out that increasing danceability and speechiness would increase explicitness to certain extent, and thus for music producers who would like to avoid expliciitness, they would want to lower the danceability and the speechiness of the song.
 
 
 ### Limitations & Recommendations/Future Studies
