@@ -448,7 +448,7 @@ text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4/sample_size, names(c
 
 The model's predictors were tested for multicollinearity using the Variance Inflation Factor. In the table below, no multicollinearity was found to be present, as all the VIF scores were hardly above 1, which means the predictors were independent.
 
-```{r echo = FALSE, message=FALSE, results = FALSE}
+```{r echo = FALSE, message=FALSE}
 vif2 <- vif(r2)
 kable(vif2, caption =  "VIF Results for logistic regression") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
@@ -461,7 +461,7 @@ When setting an arbitrary threshold, 0.5 tends to be the most intuitive, like a 
 
 For the binned residuals plot (see appendix), Overall, it shows that we have a good fit for our data since most points fall within the bands of the 95% confidence interval. However, we indeed need to be cautious about a few of outliers, where there are five having residuals larger than a 0.1 difference. Nonetheless, given that our sample size is large enough, we would not need further actions for only 5 outliers, so our linearity assumption appears to not have been violated. For our independence assumption, we surmise that it is completely satisfied because the data points were collected independently from each other, and there seems to be no pattern to the clustering of the data.
 
-```{r, message = FALSE, fig.show="hold", out.width="50%", fig.align = "center", echo=FALSE}
+```{r, message = FALSE, fig.show="hold", out.width="40%", fig.align = "center", echo=FALSE, warning=FALSE}
 test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
 test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
 Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
