@@ -482,7 +482,7 @@ conf.mat.plot(as.factor(test_fitted_2), test$explicit_fac, main = "Confusion Mat
 
 ```
 
-```{r warning=FALSE, echo=FALSE, message = FALSE,out.width = "50%", fig.show="hold", fig.align = "center"}
+```{r warning=FALSE, echo=FALSE, message = FALSE,out.width = "50%", fig.show="hold", warning = FALSE, fig.align = "center"}
 # test_fitted_0 <- predict(r2, newdata = test, type = "response") # Change Here
 # test_fitted <- ifelse(test_fitted_0 >= 0.5, "Explicit", "Non-Explicit") #Change here
 # Conf_mat3 <- confusionMatrix(as.factor(test_fitted), test$explicit_fac)
@@ -534,8 +534,8 @@ table1(~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speech
 **Correlation Matrix**
 
 ```{r echo=FALSE, message = FALSE}
-# cordf1 = cor(df1)
-# corrplot(cordf1, method = 'color', order = 'alphabet')
+cordf1 = cor(df1)
+corrplot(cordf1, method = 'color', order = 'alphabet')
 ```
 
 
