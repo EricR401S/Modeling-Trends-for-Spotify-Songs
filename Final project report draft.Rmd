@@ -532,9 +532,12 @@ table1(~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speech
 
 **Appendix 2: Correlation Matrix**
 
-```{r echo=FALSE, message = FALSE}
-# cordf1 = cor(df1)
-# corrplot(cordf1, method = 'color', order = 'alphabet')
+
+```{r echo=FALSE, message = FALSE, warning=FALSE}
+library(corrplot)
+cordf1 = cor(df1)
+corrplot::corrplot(cordf1, method = 'color', order = 'alphabet')
+
 ```
 
 
