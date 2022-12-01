@@ -571,4 +571,3 @@ Spotify. (2022, July 27). Q2 2022 Update. Retrieved November 25, 2022 from https
 Tayag, Y. (2017, May 17). Expert on Male Psychology Explains How Pop Got Sexually Explicit. Retrieved October 20, 2022, from https://www.inverse.com/article/31842-pop-music-sexually-explicit-lyrics-rap-hip-hop
 
 Yamac. (2016). Spotify Dataset 1921-2020, 600k+ Tracks. Spotify. Retrieved October 3, 2022, from https://www.kaggle.com/datasets/yamaerenay/spotify-dataset-19212020-600k-tracks
-
