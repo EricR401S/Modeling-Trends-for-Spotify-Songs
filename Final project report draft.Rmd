@@ -305,35 +305,41 @@ ggplot(edadf2) +
 
 ```{r subset, echo = FALSE, message=FALSE}
 #Load the data
-df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
+#df1 <- read.csv("https://raw.githubusercontent.com/EricR401S/Modeling-Trends-for-Spotify-Songs/part2/archive/rq1.csv")
+
+modeldf <- df1
+colnames(modeldf) <- c("popularity","acousticness_og","danceability_og","energy_og","instrumentalness_og","tempo_og","loudness_og","speechiness_og")
+
 
 #divide first
-df1$danceability0.1 <- (df1$danceability)*10
-df1$speechiness0.1 <- (df1$speechiness)*10
-df1$energy0.001 <- (df1$energy)*1000
-df1$instrumentalnes0.001 <- (df1$instrumentalness)*1000
+modeldf$danceability0.1 <- (modeldf$danceability_og)*10
+modeldf$speechiness0.1 <- (modeldf$speechiness_og)*10
+modeldf$energy0.001 <- (modeldf$energy_og)*1000
+modeldf$instrumentalnes0.001 <- (modeldf$instrumentalness_og)*1000
 
 
 #centered
-df1$acousticness_centered <- scale(df1$acousticness, scale = FALSE)
-df1$danceability0.1_centered <- scale(df1$danceability0.1, scale = FALSE)
-df1$energy0.001_centered <- scale(df1$energy0.001, scale = FALSE)
-df1$instrumentalness0.001_centered <- scale(df1$instrumentalnes0.001, scale = FALSE)
-df1$tempo_centered <- scale(df1$tempo, scale = FALSE)
-df1$loudness_centered <- scale(df1$loudness, scale = FALSE)
-df1$speechiness0.1_centered <- scale(df1$speechiness0.1, scale = FALSE)
+modeldf$acousticness <- scale(modeldf$acousticness_og, scale = FALSE)
+modeldf$danceability <- scale(modeldf$danceability_og, scale = FALSE)
+modeldf$energy <- scale(modeldf$energy_og, scale = FALSE)
+modeldf$instrumentalness <- scale(modeldf$instrumentalness_og, scale = FALSE)
+modeldf$tempo <- scale(modeldf$tempo_og, scale = FALSE)
+modeldf$loudness <- scale(modeldf$loudness_og, scale = FALSE)
+modeldf$speechiness <- scale(modeldf$speechiness0.1, scale = FALSE)
+
+modeldf
 
 #backward
-scaled1 <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness0.1_centered, data = df1)
+scaled1 <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness, data = modeldf)
 scaled <- stepAIC(scaled1, trace=FALSE, direction = 'backward')
 
 #Remove outliers and influential points
 cooksd <- cooks.distance(scaled)
 # influential row numbers
-influential <- as.numeric(names(cooksd)[(cooksd > (4/nrow(df1)))])
-df1_noinfluential <- df1[-influential, ]
+influential <- as.numeric(names(cooksd)[(cooksd > (4/nrow(modeldf)))])
+modeldf_noinfluential <- modeldf[-influential, ]
 
-model_noinfluential <- lm(popularity ~ acousticness_centered+danceability0.1_centered+energy0.001_centered+instrumentalness0.001_centered+tempo_centered+loudness_centered+speechiness0.1_centered, data = df1_noinfluential)
+model_noinfluential <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness, data = modeldf_noinfluential)
 
 summ(model_noinfluential, digits = 7)
 ```
