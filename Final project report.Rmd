@@ -143,7 +143,7 @@ The original data set was cleaned so that only observations and variables releva
 
 ### Models
 
-For the relationship between popularity and acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness, we used multiple linear regression. Popularity, the response variable, was regressed on the predictors. The predictors were mean centered to improve the interpretability of the model results, with an increase in any predictor causing a change to the average popularity of a song. Additionally, predictors energy, danceability, speechiness and instrumentalness were scaled because their values were recorded with higher precision. The seven predictors were put through a backward selection process with AIC to determine the best indicators of popularity. We choose AIC, as it imposes a lower penalty for having multiple independent variables, and were seeking to maximize the possibility of unknown relationships in our data set. The model with the lowest AIC was selected and fitted.
+For the relationship between popularity and acousticness, danceability, energy, instrumentation, tempo, loudness, and speechiness, we used multiple linear regression. Popularity, the response variable, was regressed on the predictors. The predictors were mean centered to improve the interpretability of the model results, with an increase in any predictor causing a change to the average popularity of a song. Additionally, predictors energy, danceability, speechiness and instrumentalness were scaled because their values were recorded with higher precision. 
 
 For the relationship between explicitness and danceability, energy, speechiness, and tempo, we chose to use multiple logistic regression because explicitness was a categorical variable that followed a binomial distribution, meaning a song is either explicit or non explicit. The explicitness variable was factored as 1 for explicitness and as 0 for non-explicitness. For the predictors, to improve interpretability as well, danceability, energy, and speechiness were transformed into percentages. Lastly, the data was split between a train set using tracks released from 2010-2017 and tested on a test set comprised of tracks released from 2018 to 2019. 
 
@@ -313,20 +313,39 @@ ggplot(edadf2) +
 **RQ1 : Linear Regression Model**
 
 ```{r subset, echo = FALSE, message=FALSE}
+#renaming variables
+
+df1 <- rename(df1,acousticnessorig = acousticness)
+df1 <- rename(df1,danceabilityorig = danceability)
+df1 <- rename(df1,energyorig= energy)
+df1 <- rename(df1,instrumentalnessorig= instrumentalness)
+df1 <- rename(df1,tempoorig= tempo)
+df1 <- rename(df1,loudnessorig= loudness)
+df1 <- rename(df1,speechinessorig= speechiness)
+
+#df1$acousticnessorig <- df1$acousticness
+#df1$danceabilityorig <- df1$danceability
+#df1$energyorig <- df1$energy
+#df1$instrumentalnessorig <- df1$instrumentalness
+#df1$tempoorig <-df1$tempo
+#df1$loudnessorig <- df1$loudness
+#df1$speechinessorig <- df1$speechiness
+
+
 #divide first
-df1$danceability0.1 <- (df1$danceability)*10
-df1$speechiness0.1 <- (df1$speechiness)*10
-df1$energy0.001 <- (df1$energy)*1000
-df1$instrumentalnes0.001 <- (df1$instrumentalness)*1000
+df1$danceability0.1 <- (df1$danceabilityorig)*10
+df1$speechiness0.1 <- (df1$speechinessorig)*10
+df1$energy0.001 <- (df1$energyorig)*1000
+df1$instrumentalnes0.001 <- (df1$instrumentalnessorig)*1000
 
 
 #centered
-df1$acousticness <- scale(df1$acousticness, scale = FALSE)
+df1$acousticness <- scale(df1$acousticnessorig, scale = FALSE)
 df1$danceability <- scale(df1$danceability0.1, scale = FALSE)
 df1$energy <- scale(df1$energy0.001, scale = FALSE)
 df1$instrumentalness <- scale(df1$instrumentalnes0.001, scale = FALSE)
-df1$tempo <- scale(df1$tempo, scale = FALSE)
-df1$loudness <- scale(df1$loudness, scale = FALSE)
+df1$tempo <- scale(df1$tempoorig, scale = FALSE)
+df1$loudness <- scale(df1$loudnessorig, scale = FALSE)
 df1$speechiness <- scale(df1$speechiness0.1, scale = FALSE)
 
 #backward
@@ -334,19 +353,34 @@ scaled1 <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+tem
 scaled <- stepAIC(scaled1, trace=FALSE, direction = 'backward')
 
 #Remove outliers and influential points
-cooksd <- cooks.distance(scaled)
-# influential row numbers
-influential <- as.numeric(names(cooksd)[(cooksd > (4/nrow(df1)))])
-df1_noinfluential <- df1[-influential, ]
+#cooksd <- cooks.distance(scaled)
+#influential row numbers
+#influential <- as.numeric(names(cooksd)[(cooksd > (4/nrow(df1)))])
+#df1_noinfluential <- df1[-influential, ]
 
-model_noinfluential <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness, data = df1_noinfluential)
+#model_noinfluential <- lm(popularity ~ acousticness+danceability+energy+instrumentalness+tempo+loudness+speechiness, data = df1_noinfluential)
 
-summ(model_noinfluential, digits = 7)
+#summ(model_noinfluential, digits = 7)
+
+summarydf1=summ(scaled1, digits = 2, pvals = FALSE)
+
+
+
+summarydf1
+
 ```
-From the above model results, acousticness, danceability, energy, instrumentalness, loudness and speechiness are all significant predictors of a song's popularity score at the $\alpha = 0.05$ significance level ($p< 0.001$). At a mean popularity of 39, a song has an average value of `r round(mean(df1$acousticness), 2)` for acousticness,`r round(mean(df1$danceability),2)` for danceability, `r round(mean(df1$energy),2)` for energy, `r round(mean(df1$instrumentalness),2)` for instrumentalness, `r round(mean(df1$tempo),2)` for tempo, `r round(mean(df1$loudness),2)` for loudness, and `r round(mean(df1$speechiness),2)` for speechiness. For every 1 unit increase in acousticness and loudness, a song's average popularity will increase by 1.06 and 1.6 respectively. For every 0.1 unit increase in danceability and speechiness, the song's average popularity will increase by 1.13 and 1.14 respectively, and, for every 0.001 unit increase in a song's energy and instrumentalness, a song's average popularity will decrease by 0.03 respectively in all cases holding all other factors constant. Additionally the model fit has $R^2$ value of 0.3059, meaning that almost 31% of the change in a song's popularity is explained by these predictors. We are 95% confident that the intervals (*see Appendix 3*) contain the true value for the significant predictors. The predictors in this model were found to be important in the order visualized below with significance cut off at acousticness.
+
+
+From the above model results, acousticness, danceability, energy, instrumentalness, loudness, speechiness and tempo are all significant predictors of a song's popularity score at the  $\alpha = 0.05$ significance level ($p< 0.001$). For mean value  of acousticness, danceability, energy, instrumentalness, tempo, loudness and speechiness, the popularity score of a track is 39.
+For every 1 unit increase in acousticness and loudness, a song's average popularity will increase by 1.79 and 0.98 respectively. For every 0.1 unit increase in danceability and speechiness, the song's average popularity will increase by 1.17 and 0.64 respectively, and, for every 0.001 unit increase in a song's energy and instrumentalness, a song's average popularity will decrease by 0.02 in all cases holding all other factors constant. Additionally the model fit has $R^2$ value of 0.1727, meaning that almost 17% of the change in a song's popularity is explained by these predictors. We are 95% confident that the intervals (*see Appendix 3*) contain the true value for the significant predictors. The predictors in this model were found to be important in the order visualized below with significance cut off at acousticness.
 
 ```{r echo = FALSE, message=FALSE, out.width = "50%", fig.align = 'center'}
-tvalues <- as.data.frame(abs(summary(model_noinfluential)$coefficients[,3]))
+#tvalues <- as.data.frame(abs(summary(model_noinfluential)$coefficients[,3]))
+#name <- c("acousticness","danceability","energy","instrumentalness","tempo","loudness","speechiness")
+#tdf <- data.frame(name,tvalues[2:8,])
+
+
+tvalues <- as.data.frame(abs(summary(scaled1)$coefficients[,3]))
 name <- c("acousticness","danceability","energy","instrumentalness","tempo","loudness","speechiness")
 tdf <- data.frame(name,tvalues[2:8,])
 
@@ -381,7 +415,9 @@ Odd_ratios <- exp(coef(r2))
 Conf_intervals <- exp(confint(r2))
 logi_results <- data.frame(Odd_ratios,Conf_intervals)
 results<- logi_results[2:5,]
-kable(results, caption =  "Odds Ratio and Confidence intervals") %>% kable_styling(position="center",latex_options = c("hold_position"))
+knitr::kable((round(results,2)), caption =  "Odds Ratio and Confidence intervals") %>%
+kable_styling(position="center",latex_options = c("hold_position"))
+
 
 #stargazer(exp(cbind(OR = coef(r2))), type = "latex", report = ("vcsp*"),header = FALSE, single.row = TRUE, digits = 4, no.space = TRUE, column.sep.width = "3pt", title = "Odds Ratio : Logistic Regression Model for Explicitness")
 ```
@@ -569,14 +605,14 @@ corrplot::corrplot(cordf1, method = 'color', order = 'alphabet')
 **Appendix 3: Confidence Intervals**
 
 ```{r echo = FALSE, message=FALSE, fig.align ='left'}
-confinterval <- confint(model_noinfluential, level = 0.95)
+confinterval <- confint(scaled1, level = 0.95)
 kable(confinterval, caption =  "Confidence interval ranges for popularity model") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 
 **Appendix 4: Variance Inflation Factor for the models**
 
 ```{r echo = FALSE, message=FALSE}
-vif1 <- vif(model_noinfluential)
+vif1 <- vif(scaled1)
 kable(vif1, caption =  "VIF Results for linear regression") %>% kable_styling(position="center",latex_options = c("hold_position"))
 ```
 
